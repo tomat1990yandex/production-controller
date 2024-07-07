@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
-import { Card, Button, Input, Select } from 'antd';
-import { CardType, CardStatus } from '../types';
+import { Button, Card, Input, Select } from 'antd';
+import { CardStatus, CardType } from '../types';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -43,7 +43,11 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) 
               style={{ width: '100%' }}
             />
         }
-        extra={<Button type="link" onClick={() => onDelete(card.id)}>Delete</Button>}
+        extra={
+            <Button type="link"
+                    disabled={!card.isEditing}
+                    onClick={() => onDelete(card.id)}>Delete</Button>
+        }
         style={{
             borderLeft: `5px solid ${card.status}`,
             marginBottom: '10px'
