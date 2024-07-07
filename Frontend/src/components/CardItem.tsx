@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button, Card, Input, Select } from 'antd';
 import { CardStatus, CardType } from '../types';
 
@@ -9,27 +9,34 @@ interface CardItemProps {
     card: CardType;
     onDelete: (id: number) => void;
     onUpdate: (id: number, key: keyof CardType, value: string | CardStatus | boolean) => void;
+    isAuthenticated: boolean;
 }
 
-export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) => {
+export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthenticated }) => {
+    const [localCard, setLocalCard] = useState(card);
+
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        onUpdate(card._id, 'title', e.target.value);
+        setLocalCard({ ...localCard, title: e.target.value });
     };
 
     const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-        onUpdate(card._id, 'text', e.target.value);
+        setLocalCard({ ...localCard, text: e.target.value });
     };
 
     const handleStatusChange = (value: CardStatus): void => {
-        onUpdate(card._id, 'status', value);
+        setLocalCard({ ...localCard, status: value });
     };
 
     const handleSave = (): void => {
-        onUpdate(card._id, 'isEditing', false);
+        onUpdate(localCard._id, 'title', localCard.title);
+        onUpdate(localCard._id, 'text', localCard.text);
+        onUpdate(localCard._id, 'status', localCard.status);
+        onUpdate(localCard._id, 'isEditing', false);
     };
 
     const handleEdit = (): void => {
-        onUpdate(card._id, 'isEditing', true);
+        // onUpdate(card._id, 'isEditing', true);
+        setLocalCard({ ...localCard, isEditing: true });
     };
 
     return (
@@ -37,16 +44,18 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) 
         key={card._id}
         title={
             <Input
-              value={card.title}
+              value={localCard.title}
               onChange={handleTitleChange}
               disabled={!card.isEditing}
               style={{ width: '100%' }}
             />
         }
         extra={
+          isAuthenticated && (
             <Button type="link"
                     disabled={!card.isEditing}
                     onClick={() => onDelete(card._id)}>Delete</Button>
+          )
         }
         style={{
             borderLeft: `5px solid ${card.status}`,
@@ -54,7 +63,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) 
         }}
       >
           <Select
-            value={card.status}
+            value={localCard.status}
             onChange={handleStatusChange}
             disabled={!card.isEditing}
             style={{ marginBottom: '10px' }}
@@ -64,16 +73,16 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) 
               <Option value="red">Red</Option>
           </Select>
           <TextArea
-            value={card.text}
+            value={localCard.text}
             onChange={handleTextChange}
             rows={4}
             disabled={!card.isEditing}
           />
           <div style={{ marginTop: '10px' }}>
               {card.isEditing ? (
-                <Button type="primary" onClick={handleSave}>Save</Button>
+                isAuthenticated && <Button type="primary" onClick={handleSave}>Save</Button>
               ) : (
-                <Button type="default" onClick={handleEdit}>Edit</Button>
+                isAuthenticated && <Button type="default" onClick={handleEdit}>Edit</Button>
               )}
           </div>
       </Card>

@@ -9,9 +9,10 @@ interface CardListProps {
     onDelete: (id: number) => void;
     onUpdate: (id: number, key: keyof CardType, value: string | CardStatus | boolean) => void;
     onAddCard: () => void;
+    isAuthenticated: boolean;
 }
 
-export const CardList: React.FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCard }) => {
+export const CardList: React.FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCard, isAuthenticated}) => {
     return (
       <div className="cards-container">
           {cards.map(card => (
@@ -20,22 +21,24 @@ export const CardList: React.FC<CardListProps> = ({ cards, onDelete, onUpdate, o
               card={card}
               onDelete={onDelete}
               onUpdate={onUpdate}
+              isAuthenticated={isAuthenticated}
             />
           ))}
-          <Card
-            style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100px',
-                cursor: 'pointer',
-                border: '2px dashed #d9d9d9',
-                marginBottom: '10px'
-            }}
-            onClick={onAddCard}
-          >
-              <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }} />
-          </Card>
+          {isAuthenticated && (
+            <Card
+              style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  border: '2px dashed #d9d9d9',
+                  marginBottom: '10px'
+              }}
+              onClick={onAddCard}
+            >
+                <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }} />
+            </Card>
+          )}
       </div>
     );
 };

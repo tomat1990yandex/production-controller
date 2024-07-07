@@ -29,10 +29,10 @@ export const App: React.FC = () => {
                 setCards((prevCards) => [...prevCards, message.payload]);
             } else if (message.action === 'updateCard') {
                 setCards((prevCards) =>
-                  prevCards.map((card) => (card._id === message.payload.id ? message.payload : card))
+                  prevCards.map((card) => (card._id === message.payload._id ? message.payload : card))
                 );
             } else if (message.action === 'deleteCard') {
-                setCards((prevCards) => prevCards.filter((card) => card._id !== message.payload.id));
+                setCards((prevCards) => prevCards.filter((card) => card._id !== message.payload._id));
             }
         };
 
@@ -84,13 +84,13 @@ export const App: React.FC = () => {
       <div className="app-container">
           {!authContext?.token ? (
             <>
-                <AuthForm/>
-                <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard}/>
+                <AuthForm />
+                <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard} isAuthenticated={false} />
             </>
           ) : (
             <>
                 <Button onClick={authContext.logout}>Logout</Button>
-                <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard}/>
+                <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard} isAuthenticated={true} />
             </>
           )}
       </div>
@@ -99,6 +99,6 @@ export const App: React.FC = () => {
 
 export const WrappedApp: React.FC = () => (
   <AuthProvider>
-      <App/>
+      <App />
   </AuthProvider>
 );
