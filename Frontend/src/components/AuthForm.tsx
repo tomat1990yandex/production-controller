@@ -15,8 +15,8 @@ export const AuthForm: FC = () => {
     const [modal, contextHolder] = Modal.useModal();
     const location = useLocation();
 
-    const config = {
-        title: isLogin ? 'Register success!' : 'Register error!',
+    const textSuccess = {
+        title: 'Register success!',
         content: (
           <>
               <span>{`Username: ${username}`}</span>
@@ -25,6 +25,10 @@ export const AuthForm: FC = () => {
           </>
         ),
     };
+
+    const textError = {
+        title: 'Register error!',
+    }
 
     useEffect(() => {
         if (location.pathname === '/admin') {
@@ -41,13 +45,21 @@ export const AuthForm: FC = () => {
                 username,
                 password,
             });
-            authContext?.login(response.data.token);
+            if (isLogin) {
+                authContext?.login(response.data.token);
+            } else {
+                const response = await axios.post(`${baseUrl}/api/auth/login`, {
+                    username,
+                    password,
+                });
+                authContext?.login(response.data.token);
+            }
             setLoadings(false)
-            modal.success(config)
+            modal.success(textSuccess)
         } catch (error) {
             console.error('Authentication error', error);
             setLoadings(false)
-            modal.error(config)
+            modal.error(textError)
         }
     };
 
