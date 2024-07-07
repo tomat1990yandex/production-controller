@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import * as jwt from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 
 interface JwtPayload {
     id: string;
@@ -13,7 +13,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     const token = authHeader.split(' ')[1];
     try {
-        res.locals.user = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+        res.locals.user = verify(token, process.env.JWT_SECRET!) as JwtPayload;
         next();
     } catch (error) {
         return res.status(401).json({ error: 'Token is not valid' });
