@@ -1,9 +1,5 @@
 import { Card, ICard } from '../models/cardModel';
 
-export const findCardsByUserId = async (userId: string): Promise<ICard[]> => {
-    return Card.find({ userId });
-};
-
 export const findAllCards = async (): Promise<ICard[]> => {
     return Card.find();
 };

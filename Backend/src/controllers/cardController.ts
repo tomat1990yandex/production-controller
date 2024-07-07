@@ -1,22 +1,19 @@
 import { Request, Response } from 'express';
-import { createCard, deleteCard, findAllCards, findCardsByUserId, updateCard } from '../services/cardService';
-import { ICard } from "../models/cardModel";
+import { createCard, deleteCard, findAllCards, updateCard } from '../services/cardService';
 
 export const getCards = async (req: Request, res: Response): Promise<void> => {
     try {
-        const cards = req.user?.role === 'admin' ? await findAllCards() : await findCardsByUserId(req.user?.id!);
+        const cards = await findAllCards();
         res.json(cards);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
-
 export const createCardHandler = async (req: Request, res: Response) => {
     const { title, status, text } = req.body;
     try {
-        const card: Partial<ICard> = { title, status, text, userId: req.user.id };
-        const newCard = await createCard(card);
+        const newCard = await createCard({ title, status, text });
         res.status(201).json(newCard);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });

@@ -1,14 +1,12 @@
 import { Router } from 'express';
-import { getCards, createCardHandler, updateCardHandler, deleteCardHandler } from '../controllers/cardController';
+import { createCardHandler, deleteCardHandler, getCards, updateCardHandler } from '../controllers/cardController';
 import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.use(authMiddleware);
-
 router.get('/', getCards);
-router.post('/', createCardHandler);
-router.put('/:id', updateCardHandler);
-router.delete('/:id', deleteCardHandler);
+router.post('/', authMiddleware, createCardHandler);
+router.put('/:id', authMiddleware, updateCardHandler);
+router.delete('/:id', authMiddleware, deleteCardHandler);
 
 export default router;

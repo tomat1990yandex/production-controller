@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { findUserByUsername, createUser } from '../services/userService';
-import { IUser } from '../models/userModel';
+import { createUser, findUserByUsername } from '../services/userService';
 
 export const register = async (req: Request, res: Response) => {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
 
     try {
         const existingUser = await findUserByUsername(username);
@@ -12,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        const user = await createUser({ username, password, role });
+        const user = await createUser({ username, password });
 
         res.status(201).json({ message: 'User created', user });
     } catch (error) {
@@ -34,8 +33,8 @@ export const login = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, {
-            expiresIn: '1h'
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+            expiresIn: '8h'
         });
 
         res.status(200).json({ token });

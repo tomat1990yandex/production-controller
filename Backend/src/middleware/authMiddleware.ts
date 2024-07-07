@@ -1,12 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { NextFunction, Request, Response } from 'express';
+import jwt from "jsonwebtoken";
 
 interface JwtPayload {
     id: string;
-    role: 'user' | 'admin';
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): e.Response<any, Record<string, any>> => {
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({ error: 'No token provided' });
@@ -14,8 +13,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
     const token = authHeader.split(' ')[1];
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-        req.user = { id: decoded.id, role: decoded.role };
+        res.locals.user = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
         next();
     } catch (error) {
         return res.status(401).json({ error: 'Token is not valid' });

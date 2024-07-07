@@ -5,7 +5,7 @@ import authRoutes from './routes/authRoutes';
 import cardRoutes from './routes/cardRoutes';
 
 dotenv.config();
-
+const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(express.json());
@@ -23,11 +23,13 @@ mongoose.connect(mongoUri, mongoOptions)
       console.log('MongoDB connection error:', error);
   });
 
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/cards', cardRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
-
-export default app;

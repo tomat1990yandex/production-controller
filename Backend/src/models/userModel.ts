@@ -4,14 +4,12 @@ import bcrypt from 'bcryptjs';
 export interface IUser extends Document {
     username: string;
     password: string;
-    role: 'user' | 'admin';
     comparePassword(password: string): Promise<boolean>;
 }
 
 const UserSchema: Schema = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' }
 });
 
 UserSchema.pre<IUser>('save', async function (next) {
