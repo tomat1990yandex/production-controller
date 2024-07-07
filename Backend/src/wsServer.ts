@@ -1,10 +1,10 @@
 import WebSocket, { WebSocketServer } from 'ws';
 import { createCard, deleteCard, findAllCards, updateCard } from './services/cardService';
-import jwt from 'jsonwebtoken';
+import { verify, JwtPayload } from 'jsonwebtoken';
 
 const wss = new WebSocketServer({ port: 8080 });
 
-interface JwtPayload {
+interface CustomJwtPayload extends JwtPayload {
     id: string;
 }
 
@@ -17,11 +17,19 @@ wss.on('connection', (ws: WebSocket) => {
 
         const checkAuthorization = (token: string): boolean => {
             try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+                const decoded = verify(token, process.env.JWT_SECRET!) as CustomJwtPayload;
                 return !!decoded.id;
             } catch (error) {
                 return false;
             }
+        };
+
+        const broadcast = (message: string) => {
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(message);
+                }
+            });
         };
 
         switch (action) {
@@ -43,14 +51,14 @@ wss.on('connection', (ws: WebSocket) => {
                 try {
                     if (action === 'createCard') {
                         const newCard = await createCard(payload);
-                        ws.send(JSON.stringify({ action: 'createCard', payload: newCard }));
+                        broadcast(JSON.stringify({ action: 'createCard', payload: newCard }));
                     } else if (action === 'updateCard') {
                         const { _id, ...updateData } = payload;
                         const card = await updateCard(_id, updateData);
                         if (!card) {
                             ws.send(JSON.stringify({ action: 'error', payload: 'Card not found' }));
                         } else {
-                            ws.send(JSON.stringify({ action: 'updateCard', payload: card }));
+                            broadcast(JSON.stringify({ action: 'updateCard', payload: card }));
                         }
                     } else if (action === 'deleteCard') {
                         const { _id } = payload;
@@ -58,7 +66,7 @@ wss.on('connection', (ws: WebSocket) => {
                         if (!card) {
                             ws.send(JSON.stringify({ action: 'error', payload: 'Card not found' }));
                         } else {
-                            ws.send(JSON.stringify({ action: 'deleteCard', payload: _id }));
+                            broadcast(JSON.stringify({ action: 'deleteCard', payload: _id }));
                         }
                     }
                 } catch (error) {
