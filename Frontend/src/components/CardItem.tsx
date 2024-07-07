@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { Button, Card, Input, Select } from 'antd';
 import { CardStatus, CardType } from '../types';
 
@@ -12,7 +12,7 @@ interface CardItemProps {
     isAuthenticated: boolean;
 }
 
-export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthenticated }) => {
+export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthenticated }) => {
     const [localCard, setLocalCard] = useState({ ...card, isEditing: false });
 
     useEffect(() => {
@@ -72,7 +72,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
         }
         style={{
             borderLeft: `5px solid ${card.status}`,
-            marginBottom: '10px'
+            width: 300,
         }}
       >
           <Select

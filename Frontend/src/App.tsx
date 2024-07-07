@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { CardType } from './types';
 import './App.css';
@@ -6,10 +6,11 @@ import { CardList } from './components/CardList';
 import { AuthForm } from './components/AuthForm';
 import { AuthContext } from './contexts/AuthContext';
 import { Button } from "antd";
+import { AdminPage } from "./components/AdminPage";
 
 const initialCards: CardType[] = [];
 
-export const App: React.FC = () => {
+export const App: FC = () => {
     const [cards, setCards] = useState<CardType[]>(initialCards);
     const [ws, setWs] = useState<WebSocket | null>(null);
     const authContext = useContext(AuthContext);
@@ -84,7 +85,7 @@ export const App: React.FC = () => {
                   <header className={'header-container'}>
                       {!authContext?.token
                         ? <AuthForm/>
-                        : <Button onClick={authContext.logout}>Logout</Button>
+                        : <Button type={"primary"} onClick={authContext.logout}>Logout</Button>
                       }
                   </header>
                   <main>
@@ -98,7 +99,7 @@ export const App: React.FC = () => {
                   </main>
               </div>
           }/>
-          <Route path="/admin" element={<AuthForm/>}/>
+          <Route path="/admin" element={<AdminPage/>}/>
       </Routes>
     );
 };

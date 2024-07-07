@@ -17,5 +17,19 @@
 
 .header-container {
     align-self: end;
-    padding: 20px;
+    padding: 20px 0;
+}
+
+.auth-form {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.auth-title {
+    margin: 0;
+}
+
+.admin-page {
+    padding: 0 20px;
 }

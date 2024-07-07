@@ -1,10 +1,12 @@
-import React from 'react';
+import { AuthForm } from "./AuthForm";
+import { FC } from "react";
 
-export const AdminPage: React.FC = () => {
+export const AdminPage: FC = () => {
     return (
-      <div>
+      <div className={"admin-page"}>
           <h1>Admin Page</h1>
           <p>Welcome to the admin page!</p>
+          <AuthForm/>
       </div>
     );
 };
