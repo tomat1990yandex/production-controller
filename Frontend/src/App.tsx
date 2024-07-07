@@ -75,8 +75,10 @@ export const App: React.FC = () => {
         const updatedCards = cards.map((card) => (card._id === id ? { ...card, [key]: value } : card));
         setCards(updatedCards);
         const updatedCard = updatedCards.find((card) => card._id === id);
+
         if (updatedCard) {
-            ws?.send(JSON.stringify({ action: 'updateCard', payload: updatedCard, token: authContext.token }));
+            const { isEditing, ...cardWithoutEditing } = updatedCard;
+            ws?.send(JSON.stringify({ action: 'updateCard', payload: cardWithoutEditing, token: authContext.token }));
         }
     };
 

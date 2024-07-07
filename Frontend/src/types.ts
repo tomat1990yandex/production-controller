@@ -5,5 +5,4 @@ export interface CardType {
     title: string;
     status: CardStatus;
     text: string;
-    isEditing: boolean;
 }

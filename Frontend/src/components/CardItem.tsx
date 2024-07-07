@@ -13,7 +13,7 @@ interface CardItemProps {
 }
 
 export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthenticated }) => {
-    const [localCard, setLocalCard] = useState(card);
+    const [localCard, setLocalCard] = useState({ ...card, isEditing: false });
 
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setLocalCard({ ...localCard, title: e.target.value });
@@ -31,11 +31,10 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
         onUpdate(localCard._id, 'title', localCard.title);
         onUpdate(localCard._id, 'text', localCard.text);
         onUpdate(localCard._id, 'status', localCard.status);
-        onUpdate(localCard._id, 'isEditing', false);
+        setLocalCard({ ...localCard, isEditing: false });
     };
 
     const handleEdit = (): void => {
-        // onUpdate(card._id, 'isEditing', true);
         setLocalCard({ ...localCard, isEditing: true });
     };
 
@@ -46,14 +45,14 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
             <Input
               value={localCard.title}
               onChange={handleTitleChange}
-              disabled={!card.isEditing}
+              disabled={!localCard.isEditing}
               style={{ width: '100%' }}
             />
         }
         extra={
           isAuthenticated && (
             <Button type="link"
-                    disabled={!card.isEditing}
+                    disabled={!localCard.isEditing}
                     onClick={() => onDelete(card._id)}>Delete</Button>
           )
         }
@@ -65,7 +64,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
           <Select
             value={localCard.status}
             onChange={handleStatusChange}
-            disabled={!card.isEditing}
+            disabled={!localCard.isEditing}
             style={{ marginBottom: '10px' }}
           >
               <Option value="green">Green</Option>
@@ -76,11 +75,11 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
             value={localCard.text}
             onChange={handleTextChange}
             rows={4}
-            disabled={!card.isEditing}
+            disabled={!localCard.isEditing}
           />
           <div style={{ marginTop: '10px' }}>
-              {card.isEditing ? (
-                isAuthenticated && <Button type="primary" onClick={handleSave}>Save</Button>
+              {localCard.isEditing ? (
+                <Button type="primary" onClick={handleSave}>Save</Button>
               ) : (
                 isAuthenticated && <Button type="default" onClick={handleEdit}>Edit</Button>
               )}
