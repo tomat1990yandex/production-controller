@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CardStatus, CardType } from './types';
+import { CardType } from './types';
 import './App.css';
 import { CardList } from './components/CardList';
 import { AuthForm } from './components/AuthForm';
-import { AuthContext, AuthProvider } from './contexts/AuthContext';
+import { AuthContext } from './contexts/AuthContext';
 import { Button } from "antd";
 
 const initialCards: CardType[] = [];
@@ -32,7 +32,7 @@ export const App: React.FC = () => {
                   prevCards.map((card) => (card._id === message.payload._id ? message.payload : card))
                 );
             } else if (message.action === 'deleteCard') {
-                setCards((prevCards) => prevCards.filter((card) => card._id !== message.payload._id));
+                setCards((prevCards) => prevCards.filter((card) => card._id !== message.payload));
             }
         };
 
@@ -54,53 +54,40 @@ export const App: React.FC = () => {
     const addCard = (): void => {
         if (!authContext?.token) return;
         const newCard: CardType = {
-            _id: Date.now(),
             title: 'New Card',
             status: 'green',
             text: '',
-            isEditing: true,
         };
-        setCards([...cards, newCard]);
         ws?.send(JSON.stringify({ action: 'createCard', payload: newCard, token: authContext.token }));
     };
 
     const deleteCard = (id: number): void => {
         if (!authContext?.token) return;
-        setCards(cards.filter((card) => card._id !== id));
-        ws?.send(JSON.stringify({ action: 'deleteCard', payload: { id }, token: authContext.token }));
+        ws?.send(JSON.stringify({ action: 'deleteCard', payload: { _id: id }, token: authContext.token }));
     };
 
-    const updateCard = (id: number, key: keyof CardType, value: string | CardStatus | boolean): void => {
+    const updateCard = (id: number, updatedCard: Partial<CardType>): void => {
         if (!authContext?.token) return;
-        const updatedCards = cards.map((card) => (card._id === id ? { ...card, [key]: value } : card));
+        const updatedCards = cards.map((card) => (card._id === id ? { ...card, ...updatedCard } : card));
         setCards(updatedCards);
-        const updatedCard = updatedCards.find((card) => card._id === id);
-
-        if (updatedCard) {
-            const { isEditing, ...cardWithoutEditing } = updatedCard;
-            ws?.send(JSON.stringify({ action: 'updateCard', payload: cardWithoutEditing, token: authContext.token }));
+        const cardToUpdate = updatedCards.find((card) => card._id === id);
+        if (cardToUpdate) {
+            ws?.send(JSON.stringify({ action: 'updateCard', payload: cardToUpdate, token: authContext.token }));
         }
     };
 
     return (
       <div className="app-container">
-          {!authContext?.token ? (
-            <>
-                <AuthForm />
-                <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard} isAuthenticated={false} />
-            </>
-          ) : (
-            <>
-                <Button onClick={authContext.logout}>Logout</Button>
-                <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard} isAuthenticated={true} />
-            </>
-          )}
+          <header className={'header-container'}>
+              {!authContext?.token
+                ? <AuthForm/>
+                : <Button onClick={authContext.logout}>Logout</Button>
+              }
+          </header>
+          <main>
+              <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard}
+                        isAuthenticated={!!authContext?.token}/>
+          </main>
       </div>
     );
 };
-
-export const WrappedApp: React.FC = () => (
-  <AuthProvider>
-      <App />
-  </AuthProvider>
-);

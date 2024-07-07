@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Button, Card, Input, Select } from 'antd';
 import { CardStatus, CardType } from '../types';
 
@@ -8,12 +8,16 @@ const { Option } = Select;
 interface CardItemProps {
     card: CardType;
     onDelete: (id: number) => void;
-    onUpdate: (id: number, key: keyof CardType, value: string | CardStatus | boolean) => void;
+    onUpdate: (id: number, updatedCard: Partial<CardType>) => void;
     isAuthenticated: boolean;
 }
 
 export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthenticated }) => {
     const [localCard, setLocalCard] = useState({ ...card, isEditing: false });
+
+    useEffect(() => {
+        setLocalCard({ ...card, isEditing: localCard.isEditing });
+    }, [card]);
 
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setLocalCard({ ...localCard, title: e.target.value });
@@ -28,10 +32,14 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
     };
 
     const handleSave = (): void => {
-        onUpdate(localCard._id, 'title', localCard.title);
-        onUpdate(localCard._id, 'text', localCard.text);
-        onUpdate(localCard._id, 'status', localCard.status);
-        setLocalCard({ ...localCard, isEditing: false });
+        if (localCard._id) {
+            onUpdate(localCard._id, {
+                title: localCard.title,
+                text: localCard.text,
+                status: localCard.status,
+            });
+            setLocalCard({ ...localCard, isEditing: false });
+        }
     };
 
     const handleEdit = (): void => {
@@ -51,9 +59,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
         }
         extra={
           isAuthenticated && (
-            <Button type="link"
-                    disabled={!localCard.isEditing}
-                    onClick={() => onDelete(card._id)}>Delete</Button>
+            <Button type="link" disabled={!localCard.isEditing} onClick={() => onDelete(card._id)}>Delete</Button>
           )
         }
         style={{
