@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import cardRoutes from './routes/cardRoutes';
+import './wsServer';
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;

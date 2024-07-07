@@ -1,80 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { CardType, CardStatus } from './types';
+import React, { useState } from 'react';
+import { CardStatus, CardType } from './types';
 import './App.css';
 import { CardList } from "./components/CardList.tsx";
 
-export const App: React.FC = () => {
-    const [cards, setCards] = useState<CardType[]>([]);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+const initialCards: CardType[] = [
+    { id: 1, title: 'Card 1', status: 'green', text: '', isEditing: false },
+    { id: 2, title: 'Card 2', status: 'yellow', text: '', isEditing: false },
+];
 
-    useEffect(() => {
-        if (token) {
-            axios.get('/api/cards', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-              .then(response => {
-                  setCards(response.data);
-              })
-              .catch(error => {
-                  console.error(error);
-              });
-        }
-    }, [token]);
+export const App: React.FC = () => {
+    const [cards, setCards] = useState<CardType[]>(initialCards);
 
     const addCard = (): void => {
-        const newCard: Partial<CardType> = {
+        const newCard: CardType = {
+            id: Date.now(),
             title: 'New Card',
             status: 'green',
             text: '',
             isEditing: true
         };
-
-        if (token) {
-            axios.post('/api/cards', newCard, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-              .then(response => {
-                  setCards([...cards, response.data]);
-              })
-              .catch(error => {
-                  console.error(error);
-              });
-        }
+        setCards([...cards, newCard]);
     };
 
     const deleteCard = (id: number): void => {
-        if (token) {
-            axios.delete(`/api/cards/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-              .then(() => {
-                  setCards(cards.filter(card => card.id !== id));
-              })
-              .catch(error => {
-                  console.error(error);
-              });
-        }
+        setCards(cards.filter(card => card.id !== id));
     };
 
     const updateCard = (id: number, key: keyof CardType, value: string | CardStatus | boolean): void => {
-        const updatedCard = cards.find(card => card.id === id);
-        if (updatedCard) {
-            updatedCard[key] = value as any;
-            setCards([...cards]);
-
-            if (token) {
-                axios.put(`/api/cards/${id}`, updatedCard, {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                  .then(response => {
-                      setCards(cards.map(card => card.id === id ? response.data : card));
-                  })
-                  .catch(error => {
-                      console.error(error);
-                  });
-            }
-        }
+        setCards(cards.map(card => card.id === id ? { ...card, [key]: value } : card));
     };
 
     return (
