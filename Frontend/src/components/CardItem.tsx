@@ -32,7 +32,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
     };
 
     const handleSave = (): void => {
-        if (localCard._id) {
+        if (localCard._id !== undefined) {
             onUpdate(localCard._id, {
                 title: localCard.title,
                 text: localCard.text,
@@ -44,6 +44,12 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
 
     const handleEdit = (): void => {
         setLocalCard({ ...localCard, isEditing: true });
+    };
+
+    const handleDelete = (): void => {
+        if (localCard._id !== undefined) {
+            onDelete(localCard._id);
+        }
     };
 
     return (
@@ -59,7 +65,9 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
         }
         extra={
           isAuthenticated && (
-            <Button type="link" disabled={!localCard.isEditing} onClick={() => onDelete(card._id)}>Delete</Button>
+            <Button type="link" disabled={localCard.isEditing} onClick={handleDelete}>
+                Delete
+            </Button>
           )
         }
         style={{

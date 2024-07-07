@@ -1,13 +1,13 @@
 import React from 'react';
 import { Card } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { CardStatus, CardType } from '../types';
+import { CardType } from '../types';
 import { CardItem } from "./CardItem.tsx";
 
 interface CardListProps {
     cards: CardType[];
     onDelete: (id: number) => void;
-    onUpdate: (id: number, key: keyof CardType, value: string | CardStatus | boolean) => void;
+    onUpdate: (id: number, updatedCard: Partial<CardType>) => void;
     onAddCard: () => void;
     isAuthenticated: boolean;
 }
