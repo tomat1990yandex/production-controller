@@ -17,7 +17,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
 
     useEffect(() => {
         setLocalCard({ ...card, isEditing: localCard.isEditing });
-    }, [card]);
+    }, [card, localCard.isEditing]);
 
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setLocalCard({ ...localCard, title: e.target.value });
@@ -47,7 +47,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
     };
 
     const handleDelete = (): void => {
-        if (localCard._id !== undefined) {
+        if (localCard._id) {
             onDelete(localCard._id);
         }
     };
@@ -65,7 +65,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate, is
         }
         extra={
           isAuthenticated && (
-            <Button type="link" disabled={localCard.isEditing} onClick={handleDelete}>
+            <Button type="link" disabled={!localCard.isEditing} onClick={handleDelete}>
                 Delete
             </Button>
           )

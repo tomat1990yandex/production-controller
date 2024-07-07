@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { CardType } from './types';
 import './App.css';
 import { CardList } from './components/CardList';
@@ -77,17 +78,27 @@ export const App: React.FC = () => {
     };
 
     return (
-      <div className="app-container">
-          <header className={'header-container'}>
-              {!authContext?.token
-                ? <AuthForm/>
-                : <Button onClick={authContext.logout}>Logout</Button>
-              }
-          </header>
-          <main>
-              <CardList cards={cards} onDelete={deleteCard} onUpdate={updateCard} onAddCard={addCard}
-                        isAuthenticated={!!authContext?.token}/>
-          </main>
-      </div>
+      <Routes>
+          <Route path="/" element={
+              <div className="app-container">
+                  <header className={'header-container'}>
+                      {!authContext?.token
+                        ? <AuthForm/>
+                        : <Button onClick={authContext.logout}>Logout</Button>
+                      }
+                  </header>
+                  <main>
+                      <CardList
+                        cards={cards}
+                        onDelete={deleteCard}
+                        onUpdate={updateCard}
+                        onAddCard={addCard}
+                        isAuthenticated={!!authContext?.token}
+                      />
+                  </main>
+              </div>
+          }/>
+          <Route path="/admin" element={<AuthForm/>}/>
+      </Routes>
     );
 };
