@@ -1,8 +1,9 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from "cors";
 import authRoutes from './routes/authRoutes';
-import cardRoutes from './routes/cardRoutes';
+
 import './wsServer';
 
 dotenv.config();
@@ -28,8 +29,12 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+app.use(cors({
+    credentials: true,
+    origin: process.env.CLIENT_URL || true,
+}));
+
 app.use('/api/auth', authRoutes);
-app.use('/api/cards', cardRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

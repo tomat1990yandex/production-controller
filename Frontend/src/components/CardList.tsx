@@ -16,7 +16,7 @@ export const CardList: React.FC<CardListProps> = ({ cards, onDelete, onUpdate, o
       <div className="cards-container">
           {cards.map(card => (
             <CardItem
-              key={card.id}
+              key={card._id}
               card={card}
               onDelete={onDelete}
               onUpdate={onUpdate}

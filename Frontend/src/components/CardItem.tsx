@@ -13,28 +13,28 @@ interface CardItemProps {
 
 export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) => {
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        onUpdate(card.id, 'title', e.target.value);
+        onUpdate(card._id, 'title', e.target.value);
     };
 
     const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-        onUpdate(card.id, 'text', e.target.value);
+        onUpdate(card._id, 'text', e.target.value);
     };
 
     const handleStatusChange = (value: CardStatus): void => {
-        onUpdate(card.id, 'status', value);
+        onUpdate(card._id, 'status', value);
     };
 
     const handleSave = (): void => {
-        onUpdate(card.id, 'isEditing', false);
+        onUpdate(card._id, 'isEditing', false);
     };
 
     const handleEdit = (): void => {
-        onUpdate(card.id, 'isEditing', true);
+        onUpdate(card._id, 'isEditing', true);
     };
 
     return (
       <Card
-        key={card.id}
+        key={card._id}
         title={
             <Input
               value={card.title}
@@ -46,7 +46,7 @@ export const CardItem: React.FC<CardItemProps> = ({ card, onDelete, onUpdate }) 
         extra={
             <Button type="link"
                     disabled={!card.isEditing}
-                    onClick={() => onDelete(card.id)}>Delete</Button>
+                    onClick={() => onDelete(card._id)}>Delete</Button>
         }
         style={{
             borderLeft: `5px solid ${card.status}`,
