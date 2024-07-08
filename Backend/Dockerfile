@@ -1,5 +1,5 @@
 # Используем offical image node slim для бэкенда
-FROM node:slim
+FROM node:20-slim
 
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /app

@@ -7,23 +7,28 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:80"  # Порт для доступа к фронтенду
+    container_name: pc-gui
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"  # Порт для доступа к бэкенду
+      - "5000:5000"
+      - "8080:8080"
+      # Порт для доступа к бэкенду
     environment:
       - NODE_ENV=production
     depends_on:
       - mongodb  # Указываем зависимость от сервиса mongodb
+    container_name: pc-api
+
 
   mongodb:
     image: mongo
     ports:
       - "27017:27017"  # Порт MongoDB
-
+    container_name: pc-db
     # Определяем volume для хранения данных MongoDB
     volumes:
       - mongodb_data:/data/db

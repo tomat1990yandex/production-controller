@@ -1,5 +1,5 @@
 # Используем offical image node slim для фронтенда
-FROM node:slim as build
+FROM node:20-slim as build
 
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
