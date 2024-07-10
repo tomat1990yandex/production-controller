@@ -1,5 +1,6 @@
 import WebSocket, { WebSocketServer } from 'ws';
 import { createCard, deleteCard, findAllCards, updateCard } from './services/cardService';
+import { createGroup, deleteGroup, findAllGroups, updateGroup } from './services/groupService';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
 const wss = new WebSocketServer({ port: 8080 });
@@ -67,6 +68,46 @@ wss.on('connection', (ws: WebSocket) => {
                             ws.send(JSON.stringify({ action: 'error', payload: 'Card not found' }));
                         } else {
                             broadcast(JSON.stringify({ action: 'deleteCard', payload: _id }));
+                        }
+                    }
+                } catch (error) {
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Server error' }));
+                }
+                break;
+            case 'getGroups':
+                try {
+                    const groups = await findAllGroups();
+                    ws.send(JSON.stringify({ action: 'getGroups', payload: groups }));
+                } catch (error) {
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Internal Server Error' }));
+                }
+                break;
+            case 'createGroup':
+            case 'updateGroup':
+            case 'deleteGroup':
+                if (!checkAuthorization(token)) {
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Unauthorized' }));
+                    break;
+                }
+                try {
+                    if (action === 'createGroup') {
+                        const newGroup = await createGroup(payload);
+                        broadcast(JSON.stringify({ action: 'createGroup', payload: newGroup }));
+                    } else if (action === 'updateGroup') {
+                        const { _id, ...updateData } = payload;
+                        const group = await updateGroup(_id, updateData);
+                        if (!group) {
+                            ws.send(JSON.stringify({ action: 'error', payload: 'Group not found' }));
+                        } else {
+                            broadcast(JSON.stringify({ action: 'updateGroup', payload: group }));
+                        }
+                    } else if (action === 'deleteGroup') {
+                        const { _id } = payload;
+                        const group = await deleteGroup(_id);
+                        if (!group) {
+                            ws.send(JSON.stringify({ action: 'error', payload: 'Group not found' }));
+                        } else {
+                            broadcast(JSON.stringify({ action: 'deleteGroup', payload: _id }));
                         }
                     }
                 } catch (error) {
