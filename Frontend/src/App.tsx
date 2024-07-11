@@ -2,11 +2,12 @@ import { ChangeEvent, FC, useContext, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { CardType, GroupType } from './types';
 import './App.css';
-import { AuthForm } from './components/AuthForm';
 import { AuthContext } from './contexts/AuthContext';
-import { Button, Input, Modal, notification } from "antd";
+import { notification } from "antd";
 import { AdminPage } from "./components/AdminPage";
-import { CardList } from "./components/CardList.tsx";
+import { GroupList } from "./components/GroupList";
+import { GroupModal } from "./components/GroupModal";
+import { Header } from "./components/Header";
 
 const initialCards: CardType[] = [];
 const initialGroups: GroupType[] = [];
@@ -16,10 +17,10 @@ export const App: FC = () => {
     const [groups, setGroups] = useState<GroupType[]>(initialGroups);
     const [ws, setWs] = useState<WebSocket | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false); // Для модалки редактирования группы
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [newGroupName, setNewGroupName] = useState('');
     const [selectedGroup, setSelectedGroup] = useState<GroupType | null>(null);
-    const [editedGroupName, setEditedGroupName] = useState(''); // Для хранения редактируемого названия группы
+    const [editedGroupName, setEditedGroupName] = useState('');
     const authContext = useContext(AuthContext);
 
     useEffect(() => {
@@ -162,7 +163,7 @@ export const App: FC = () => {
 
     const handleEditGroup = (group: GroupType) => {
         setSelectedGroup(group);
-        setEditedGroupName(group.groupName || ''); // Устанавливаем текущее название группы
+        setEditedGroupName(group.groupName || '');
         setIsEditModalVisible(true);
     };
 
@@ -206,68 +207,42 @@ export const App: FC = () => {
             path="/"
             element={
                 <div className="app-container">
-                    <header className={'header-container'}>
-                        {!authContext?.token ? (
-                          <AuthForm/>
-                        ) : (
-                          <>
-                              <Button onClick={handleAddGroup}>Добавить группу</Button>
-                              <Button type={"primary"} onClick={authContext.logout}>
-                                  Выйти
-                              </Button>
-                          </>
-                        )}
-                    </header>
+                    <Header
+                      handleAddGroup={handleAddGroup}
+                      isAuthenticated={!!authContext?.token}
+                      logout={authContext?.logout}
+                    />
                     <main>
-                        <Modal
-                          title="Добавить группу"
-                          open={isModalVisible}
-                          onOk={handleModalOk}
-                          onCancel={handleModalCancel}
-                        >
-                            <Input
-                              placeholder="Введите название группы"
-                              value={newGroupName}
-                              onChange={handleGroupNameChange}
-                            />
-                        </Modal>
-                        <Modal
-                          title="Редактировать группу"
-                          open={isEditModalVisible}
-                          onOk={handleEditModalOk}
-                          onCancel={handleEditModalCancel}
-                        >
-                            <Input
-                              placeholder="Введите новое название группы"
-                              value={editedGroupName}
-                              onChange={handleEditGroupNameChange}
-                            />
-                        </Modal>
-                        <div className="groups-container">
-                            {groups.map((group) => (
-                              <div key={group._id} className="group" onClick={() => handleGroupSelect(group)}>
-                                  <h2>{group.groupName}</h2>
-                                  <CardList
-                                    cards={cards.filter((card) => card.group?._id === group._id)}
-                                    onDelete={deleteCard}
-                                    onUpdate={updateCard}
-                                    onAddCard={addCard}
-                                    isAuthenticated={!!authContext?.token}
-                                  />
-                                  {authContext?.token && (
-                                    <div className="group-actions">
-                                        <Button onClick={() => deleteGroup(group._id)}>Удалить группу</Button>
-                                        <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
-                                    </div>
-                                  )}
-                              </div>
-                            ))}
-                        </div>
+                        <GroupModal
+                          isModalVisible={isModalVisible}
+                          handleModalOk={handleModalOk}
+                          handleModalCancel={handleModalCancel}
+                          newGroupName={newGroupName}
+                          handleGroupNameChange={handleGroupNameChange}
+                        />
+                        <GroupModal
+                          isModalVisible={isEditModalVisible}
+                          handleModalOk={handleEditModalOk}
+                          handleModalCancel={handleEditModalCancel}
+                          newGroupName={editedGroupName}
+                          handleGroupNameChange={handleEditGroupNameChange}
+                        />
+                        <GroupList
+                          groups={groups}
+                          cards={cards}
+                          deleteCard={deleteCard}
+                          updateCard={updateCard}
+                          addCard={addCard}
+                          deleteGroup={deleteGroup}
+                          handleEditGroup={handleEditGroup}
+                          handleGroupSelect={handleGroupSelect}
+                          isAuthenticated={!!authContext?.token}
+                        />
                     </main>
                 </div>
             }
           />
-          <Route path="/admin" element={<AdminPage/>}/>
+          <Route path="/admin" element={<AdminPage />} />
       </Routes>
     );
 };
