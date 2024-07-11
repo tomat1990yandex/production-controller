@@ -1,28 +1,31 @@
-/* App.css */
-
 .app-container {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
 }
 
 .header-container {
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 20px;
+    align-self: end;
+    padding: 20px 0;
 }
 
 .groups-container {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
-    gap: 20px;
 }
 
 .group {
     display: flex;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    width: 100%;
-    max-width: 600px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.group-title {
+    margin: 10px;
 }
 
 .cards-container {
@@ -30,3 +33,48 @@
     flex-wrap: wrap;
     gap: 10px;
 }
+
+.group-wrapper {
+    gap: 10px;
+}
+
+.group-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    gap: 10px;
+}
+
+
+.add-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px dashed #d9d9d9;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.header-container {
+
+}
+
+.auth-form {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.auth-title {
+    margin: 0;
+}
+
+.admin-page {
+    padding: 0 20px;
+}
+

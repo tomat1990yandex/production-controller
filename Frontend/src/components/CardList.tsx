@@ -13,6 +13,7 @@ interface CardListProps {
 }
 
 export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCard, isAuthenticated }) => {
+    console.log(cards);
     return (
       <div className="cards-container">
           {cards.map(card => (
@@ -25,7 +26,8 @@ export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCa
             />
           ))}
           {isAuthenticated && (
-            <Card onClick={onAddCard}>
+            <Card onClick={onAddCard}
+                  className="add-card">
                 <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }}/>
             </Card>
           )}

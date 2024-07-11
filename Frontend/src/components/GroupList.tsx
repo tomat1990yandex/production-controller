@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import { CardList } from './CardList';
 import { CardType, GroupType } from '../types';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 interface GroupListProps {
     groups: GroupType[];
@@ -29,23 +30,35 @@ export const GroupList: FC<GroupListProps> = ({
     return (
       <div className="groups-container">
           {groups.map((group) => (
-            <div key={group._id} className="group" onClick={() => handleGroupSelect(group)}>
-                <h2>{group.groupName}</h2>
-                <CardList
-                  cards={cards.filter((card) => card.group?._id === group._id)}
-                  onDelete={deleteCard}
-                  onUpdate={updateCard}
-                  onAddCard={addCard}
-                  isAuthenticated={isAuthenticated}
-                />
-                {isAuthenticated && (
-                  <div className="group-actions">
-                      <Button onClick={() => deleteGroup(group._id)}>Удалить группу</Button>
-                      <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
+              <div key={group._id} className="group-wrapper">
+                  <h2 className="group-title">{group.groupName}</h2>
+                  <div className="group" onClick={() => handleGroupSelect(group)}>
+                      <CardList
+                        cards={cards.filter((card) => card.group?._id === group._id)}
+                        onDelete={deleteCard}
+                        onUpdate={updateCard}
+                        onAddCard={addCard}
+                        isAuthenticated={isAuthenticated}
+                      />
+
                   </div>
-                )}
-            </div>
-          ))}
+                  {isAuthenticated && (
+                    <div className="group-actions">
+                        <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
+                        <Popconfirm
+                          title="Удалить группу?"
+                          description="Вы уверены что хотите удалить группу?"
+                          icon={<QuestionCircleOutlined style={{ color: 'red' }}/>}
+                          onConfirm={() => deleteGroup(group._id)}
+                        >
+                            <Button danger>Удалить группу</Button>
+                        </Popconfirm>
+                    </div>
+                  )}
+              </div>
+            )
+          )}
       </div>
-    );
+    )
+      ;
 };

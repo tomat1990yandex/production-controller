@@ -76,11 +76,11 @@ export const App: FC = () => {
         };
 
         socket.onclose = () => {
-            console.log('Disconnected from WebSocket server');
+            console.log('Отключение от WebSocket server');
         };
 
         socket.onerror = (error) => {
-            console.log('WebSocket error:', error);
+            console.log('Ошибка WebSocket:', error);
         };
 
         setWs(socket);
