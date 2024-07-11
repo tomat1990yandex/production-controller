@@ -11,16 +11,19 @@ interface HeaderProps {
 export const Header: FC<HeaderProps> = ({ handleAddGroup, isAuthenticated, logout }) => {
     return (
       <header className="header-container">
-          {!isAuthenticated ? (
-            <AuthForm />
-          ) : (
-            <>
-                <Button onClick={handleAddGroup}>Добавить группу</Button>
-                <Button type="primary" onClick={logout}>
-                    Выйти
-                </Button>
-            </>
-          )}
+          <h2 className="header-title">Production-controller</h2>
+          <div className="auth-wrapper">
+              {!isAuthenticated ? (
+                <AuthForm />
+              ) : (
+                <>
+                    <Button onClick={handleAddGroup}>Добавить группу</Button>
+                    <Button type="primary" onClick={logout}>
+                        Выйти
+                    </Button>
+                </>
+              )}
+          </div>
       </header>
     );
 };

@@ -1,8 +1,8 @@
+import { FC } from 'react';
 import { Card } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { CardType } from '../types';
 import { CardItem } from "./CardItem";
-import { FC } from "react";
 
 interface CardListProps {
     cards: CardType[];
@@ -13,7 +13,6 @@ interface CardListProps {
 }
 
 export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCard, isAuthenticated }) => {
-    console.log(cards);
     return (
       <div className="cards-container">
           {cards.map(card => (
@@ -26,9 +25,8 @@ export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCa
             />
           ))}
           {isAuthenticated && (
-            <Card onClick={onAddCard}
-                  className="add-card">
-                <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }}/>
+            <Card onClick={onAddCard} className="add-card">
+                <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }} />
             </Card>
           )}
       </div>

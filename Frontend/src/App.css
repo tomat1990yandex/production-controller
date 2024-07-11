@@ -4,9 +4,14 @@
     padding: 0 20px;
 }
 
+.header-title {
+    margin: 0;
+}
+
 .header-container {
     display: flex;
-    align-self: end;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px 0;
     gap: 5px;
 }
@@ -54,12 +59,6 @@
     border: 2px dashed #d9d9d9;
 }
 
-.cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
 .auth-form {
     display: flex;
     align-items: center;
@@ -75,3 +74,7 @@
     padding: 0 20px;
 }
 
+.auth-wrapper {
+    display: flex;
+    gap: 10px;
+}

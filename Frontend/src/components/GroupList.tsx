@@ -27,38 +27,40 @@ export const GroupList: FC<GroupListProps> = ({
                                                   handleGroupSelect,
                                                   isAuthenticated
                                               }) => {
+
+    const getCardsByGroup = (groupId: number) => {
+        return cards.filter(card => card.group?._id === groupId);
+    };
+
     return (
       <div className="groups-container">
-          {groups.map((group) => (
-              <div key={group._id} className="group-wrapper">
-                  <h2 className="group-title">{group.groupName}</h2>
-                  <div className="group" onClick={() => handleGroupSelect(group)}>
-                      <CardList
-                        cards={cards.filter((card) => card.group?._id === group._id)}
-                        onDelete={deleteCard}
-                        onUpdate={updateCard}
-                        onAddCard={addCard}
-                        isAuthenticated={isAuthenticated}
-                      />
-
+          {groups.map(group => (
+            <div key={group._id} className="group-wrapper">
+                <h2 className="group-title">{group.groupName}</h2>
+                <div className="group" onClick={() => handleGroupSelect(group)}>
+                    <CardList
+                      cards={getCardsByGroup(group._id)}
+                      onDelete={deleteCard}
+                      onUpdate={updateCard}
+                      onAddCard={addCard}
+                      isAuthenticated={isAuthenticated}
+                    />
+                </div>
+                {isAuthenticated && (
+                  <div className="group-actions">
+                      <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
+                      <Popconfirm
+                        title="Удалить группу?"
+                        description="Вы уверены что хотите удалить группу?"
+                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                        onConfirm={() => deleteGroup(group._id)}
+                      >
+                          <Button danger>Удалить группу</Button>
+                      </Popconfirm>
                   </div>
-                  {isAuthenticated && (
-                    <div className="group-actions">
-                        <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
-                        <Popconfirm
-                          title="Удалить группу?"
-                          description="Вы уверены что хотите удалить группу?"
-                          icon={<QuestionCircleOutlined style={{ color: 'red' }}/>}
-                          onConfirm={() => deleteGroup(group._id)}
-                        >
-                            <Button danger>Удалить группу</Button>
-                        </Popconfirm>
-                    </div>
-                  )}
-              </div>
-            )
-          )}
+                )}
+            </div>
+          ))}
       </div>
-    )
-      ;
+    );
 };

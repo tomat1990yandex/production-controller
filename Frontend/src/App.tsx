@@ -213,20 +213,6 @@ export const App: FC = () => {
                       logout={authContext?.logout}
                     />
                     <main>
-                        <GroupModal
-                          isModalVisible={isModalVisible}
-                          handleModalOk={handleModalOk}
-                          handleModalCancel={handleModalCancel}
-                          newGroupName={newGroupName}
-                          handleGroupNameChange={handleGroupNameChange}
-                        />
-                        <GroupModal
-                          isModalVisible={isEditModalVisible}
-                          handleModalOk={handleEditModalOk}
-                          handleModalCancel={handleEditModalCancel}
-                          newGroupName={editedGroupName}
-                          handleGroupNameChange={handleEditGroupNameChange}
-                        />
                         <GroupList
                           groups={groups}
                           cards={cards}
@@ -239,6 +225,20 @@ export const App: FC = () => {
                           isAuthenticated={!!authContext?.token}
                         />
                     </main>
+                    <GroupModal
+                      isModalVisible={isModalVisible}
+                      handleModalOk={handleModalOk}
+                      handleModalCancel={handleModalCancel}
+                      newGroupName={newGroupName}
+                      handleGroupNameChange={handleGroupNameChange}
+                    />
+                    <GroupModal
+                      isModalVisible={isEditModalVisible}
+                      handleModalOk={handleEditModalOk}
+                      handleModalCancel={handleEditModalCancel}
+                      newGroupName={editedGroupName}
+                      handleGroupNameChange={handleEditGroupNameChange}
+                    />
                 </div>
             }
           />
