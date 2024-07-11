@@ -5,6 +5,10 @@ export const findAllGroups = async (): Promise<IGroup[]> => {
 };
 
 export const createGroup = async (group: Partial<IGroup>): Promise<IGroup> => {
+    const existingGroup = await Group.findOne({ groupName: group.groupName });
+    if (existingGroup) {
+        throw new Error('Имя группы должно быть уникальным');
+    }
     return Group.create(group);
 };
 

@@ -12,7 +12,7 @@ interface CardListProps {
     isAuthenticated: boolean;
 }
 
-export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCard, isAuthenticated}) => {
+export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCard, isAuthenticated }) => {
     return (
       <div className="cards-container">
           {cards.map(card => (
@@ -25,17 +25,8 @@ export const CardList: FC<CardListProps> = ({ cards, onDelete, onUpdate, onAddCa
             />
           ))}
           {isAuthenticated && (
-            <Card
-              style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  border: '2px dashed #d9d9d9',
-              }}
-              onClick={onAddCard}
-            >
-                <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }} />
+            <Card onClick={onAddCard}>
+                <PlusOutlined style={{ fontSize: '24px', color: '#d9d9d9' }}/>
             </Card>
           )}
       </div>

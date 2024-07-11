@@ -10,7 +10,7 @@ interface CustomJwtPayload extends JwtPayload {
 }
 
 wss.on('connection', (ws: WebSocket) => {
-    console.log('Client connected');
+    console.log('Клиент подключен');
 
     ws.on('message', async (message: string) => {
         const data = JSON.parse(message);
@@ -39,14 +39,15 @@ wss.on('connection', (ws: WebSocket) => {
                     const cards = await findAllCards();
                     ws.send(JSON.stringify({ action: 'getCards', payload: cards }));
                 } catch (error) {
-                    ws.send(JSON.stringify({ action: 'error', payload: 'Internal Server Error' }));
+                    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Внутренняя ошибка сервера при получении карточек', message: errorMessage }));
                 }
                 break;
             case 'createCard':
             case 'updateCard':
             case 'deleteCard':
                 if (!checkAuthorization(token)) {
-                    ws.send(JSON.stringify({ action: 'error', payload: 'Unauthorized' }));
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Неавторизованный запрос' }));
                     break;
                 }
                 try {
@@ -57,7 +58,7 @@ wss.on('connection', (ws: WebSocket) => {
                         const { _id, ...updateData } = payload;
                         const card = await updateCard(_id, updateData);
                         if (!card) {
-                            ws.send(JSON.stringify({ action: 'error', payload: 'Card not found' }));
+                            ws.send(JSON.stringify({ action: 'error', payload: 'Карточка не найдена' }));
                         } else {
                             broadcast(JSON.stringify({ action: 'updateCard', payload: card }));
                         }
@@ -65,13 +66,14 @@ wss.on('connection', (ws: WebSocket) => {
                         const { _id } = payload;
                         const card = await deleteCard(_id);
                         if (!card) {
-                            ws.send(JSON.stringify({ action: 'error', payload: 'Card not found' }));
+                            ws.send(JSON.stringify({ action: 'error', payload: 'Карточка не найдена' }));
                         } else {
                             broadcast(JSON.stringify({ action: 'deleteCard', payload: _id }));
                         }
                     }
                 } catch (error) {
-                    ws.send(JSON.stringify({ action: 'error', payload: 'Server error' }));
+                    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Ошибка сервера при работе с карточками', message: errorMessage }));
                 }
                 break;
             case 'getGroups':
@@ -79,14 +81,15 @@ wss.on('connection', (ws: WebSocket) => {
                     const groups = await findAllGroups();
                     ws.send(JSON.stringify({ action: 'getGroups', payload: groups }));
                 } catch (error) {
-                    ws.send(JSON.stringify({ action: 'error', payload: 'Internal Server Error' }));
+                    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Внутренняя ошибка сервера при получении групп', message: errorMessage }));
                 }
                 break;
             case 'createGroup':
             case 'updateGroup':
             case 'deleteGroup':
                 if (!checkAuthorization(token)) {
-                    ws.send(JSON.stringify({ action: 'error', payload: 'Unauthorized' }));
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Неавторизованный запрос' }));
                     break;
                 }
                 try {
@@ -97,7 +100,7 @@ wss.on('connection', (ws: WebSocket) => {
                         const { _id, ...updateData } = payload;
                         const group = await updateGroup(_id, updateData);
                         if (!group) {
-                            ws.send(JSON.stringify({ action: 'error', payload: 'Group not found' }));
+                            ws.send(JSON.stringify({ action: 'error', payload: 'Группа не найдена' }));
                         } else {
                             broadcast(JSON.stringify({ action: 'updateGroup', payload: group }));
                         }
@@ -105,27 +108,28 @@ wss.on('connection', (ws: WebSocket) => {
                         const { _id } = payload;
                         const group = await deleteGroup(_id);
                         if (!group) {
-                            ws.send(JSON.stringify({ action: 'error', payload: 'Group not found' }));
+                            ws.send(JSON.stringify({ action: 'error', payload: 'Группа не найдена' }));
                         } else {
                             broadcast(JSON.stringify({ action: 'deleteGroup', payload: _id }));
                         }
                     }
                 } catch (error) {
-                    ws.send(JSON.stringify({ action: 'error', payload: 'Server error' }));
+                    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+                    ws.send(JSON.stringify({ action: 'error', payload: 'Ошибка сервера при работе с группами', message: errorMessage }));
                 }
                 break;
             default:
-                ws.send(JSON.stringify({ action: 'error', payload: 'Unknown action' }));
+                ws.send(JSON.stringify({ action: 'error', payload: 'Неизвестное действие' }));
         }
     });
 
     ws.on('close', () => {
-        console.log('Client disconnected');
+        console.log('Клиент отключен');
     });
 
     ws.on('error', (error) => {
-        console.log('WebSocket error:', error);
+        console.log('Ошибка WebSocket:', error);
     });
 });
 
-console.log('WebSocket server is running');
+console.log('WebSocket сервер работает');
