@@ -1,10 +1,15 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import { AuthContext } from "../contexts/AuthContext";
 import { useLocation } from 'react-router-dom';
 
 const baseUrl = 'http://localhost:5000';
+
+type FieldType = {
+    username?: string;
+    password?: string;
+};
 
 export const AuthForm: FC = () => {
     const authContext = useContext(AuthContext);
@@ -27,7 +32,7 @@ export const AuthForm: FC = () => {
     };
 
     const textError = {
-        title: 'Register error!',
+        title: isLogin ? "Login error!" : 'Register error!'
     }
 
     useEffect(() => {
@@ -64,12 +69,31 @@ export const AuthForm: FC = () => {
     };
 
     return (
-      <div className="auth-form">
-          <h2 className={"auth-title"}>{isLogin ? 'Login' : 'Register'}</h2>
-          <Input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-          <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-          <Button type={"primary"} onClick={handleAuth} loading={loadings}>{isLogin ? 'Login' : 'Register'}</Button>
+      <Form className="auth-form" layout={"inline"} onFinish={handleAuth}>
+          <h2 className="auth-title">{isLogin ? 'Login' : 'Register'}</h2>
+          <Form.Item<FieldType>
+            name="username"
+          >
+              <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+          </Form.Item>
+          <Form.Item<FieldType>
+            name="password"
+          >
+              <Input.Password
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}/>
+          </Form.Item>
+          <Form.Item shouldUpdate>
+              {() => (
+                <Button
+                  htmlType={"submit"}
+                  type={"primary"}
+                  loading={loadings}>{isLogin ? 'Login' : 'Register'}</Button>
+              )}
+          </Form.Item>
           {contextHolder}
-      </div>
+      </Form>
     );
 };
