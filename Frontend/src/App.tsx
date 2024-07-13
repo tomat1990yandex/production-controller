@@ -133,19 +133,19 @@ export const App: FC = () => {
               <GroupList
                 groups={groups}
                 cards={cards}
-                deleteCard={(id: number) => deleteCard({ ws, token: authContext?.token, setCards }, id)}
-                updateCard={(id: number, updatedCard: Partial<CardType>) =>
+                deleteCard={(id: string) => deleteCard({ ws, token: authContext?.token, setCards }, id)}
+                updateCard={(id: string, updatedCard: Partial<CardType>) =>
                   updateCard({ ws, token: authContext?.token, setCards }, id, updatedCard)
                 }
-                addCard={(group: GroupType) =>
+                addCard={(_id) =>
                   addCard({ ws, token: authContext?.token, setCards }, {
                     title: 'New Card',
                     status: 'green',
                     text: '',
-                    group
+                    group: _id
                   })
                 }
-                deleteGroup={(id: number) => deleteGroup({ ws, token: authContext?.token, setGroups }, id)}
+                deleteGroup={(id: string) => deleteGroup({ ws, token: authContext?.token, setGroups }, id)}
                 handleEditGroup={handleEditGroup}
                 handleGroupSelect={handleGroupSelect}
                 isAuthenticated={!!authContext?.token}

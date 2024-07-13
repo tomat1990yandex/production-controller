@@ -1,14 +1,14 @@
 export type CardStatus = 'green' | 'yellow' | 'red';
 
 export interface GroupType {
-  _id: number;
+  _id: string;
   groupName: string;
 }
 
 export interface CardType {
-  _id?: number;
+  _id?: string;
   title: string;
   status: CardStatus;
   text: string;
-  group: GroupType;
+  group: string | GroupType;
 }

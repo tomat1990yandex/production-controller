@@ -7,8 +7,8 @@ const { Option } = Select;
 
 interface CardItemProps {
   card: CardType;
-  onDelete: (id: number) => void;
-  onUpdate: (id: number, updatedCard: Partial<CardType>) => void;
+  onDelete: (id: string) => void;
+  onUpdate: (id: string, updatedCard: Partial<CardType>) => void;
   isAuthenticated: boolean;
 }
 
@@ -66,7 +66,7 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
       extra={
         isAuthenticated && (
           <Button type="link" disabled={!localCard.isEditing} onClick={handleDelete}>
-            Delete
+            Удалить
           </Button>
         )
       }
@@ -93,9 +93,9 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
       />
       <div style={{ marginTop: '10px' }}>
         {localCard.isEditing ? (
-          <Button type="primary" onClick={handleSave}>Save</Button>
+          <Button type="primary" onClick={handleSave}>Сохранить</Button>
         ) : (
-          isAuthenticated && <Button type="default" onClick={handleEdit}>Edit</Button>
+          isAuthenticated && <Button type="default" onClick={handleEdit}>Редактировать</Button>
         )}
       </div>
     </Card>

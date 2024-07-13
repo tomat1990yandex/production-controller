@@ -1,16 +1,16 @@
 import { FC } from 'react';
 import { Button, Popconfirm } from 'antd';
-import { CardList } from './CardList';
 import { CardType, GroupType } from '../types';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { CardItem } from './CardItem.tsx';
 
 interface GroupListProps {
   groups: GroupType[];
   cards: CardType[];
-  deleteCard: (id: number) => void;
-  updateCard: (id: number, updatedCard: Partial<CardType>) => void;
-  addCard: (group: GroupType) => void;
-  deleteGroup: (id: number) => void;
+  deleteCard: (id: string) => void;
+  updateCard: (id: string, updatedCard: Partial<CardType>) => void;
+  addCard: (group: string) => void;
+  deleteGroup: (id: string) => void;
   handleEditGroup: (group: GroupType) => void;
   handleGroupSelect: (group: GroupType) => void;
   isAuthenticated: boolean;
@@ -33,16 +33,21 @@ export const GroupList: FC<GroupListProps> = ({
         <div key={group._id} className="group-wrapper">
           <h2 className="group-title">{group.groupName}</h2>
           <div className="group" onClick={() => handleGroupSelect(group)}>
-            <CardList
-              cards={cards.filter(card => card.group._id === group._id)}
-              onDelete={deleteCard}
-              onUpdate={updateCard}
-              isAuthenticated={isAuthenticated}
-            />
+            <div className="cards-container">
+              {(cards.filter(card => (card.group === group._id) || (card.group._id === group._id))).map(card =>
+                <CardItem
+                  key={card._id}
+                  card={card}
+                  onDelete={deleteCard}
+                  onUpdate={updateCard}
+                  isAuthenticated={isAuthenticated}
+                />
+              )}
+            </div>
           </div>
           {isAuthenticated && (
             <div className="group-actions">
-              <Button onClick={() => addCard(group)}>Добавить карточку</Button>
+              <Button onClick={() => addCard(group._id)}>Добавить карточку</Button>
               <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
               <Popconfirm
                 title="Удалить группу?"

@@ -25,7 +25,6 @@ export const addCard = (
 
   ws?.addEventListener('message', (event) => {
     const message = JSON.parse(event.data);
-    console.log(message);
     if (message.action === 'createCard') {
       setCards((prevCards) => [...prevCards, message.payload]);
     } else if (message.action === 'error') {
@@ -36,7 +35,7 @@ export const addCard = (
 
 export const deleteCard = (
   { ws, token, setCards }: CardActionsProps,
-  id: number
+  id: string
 ): void => {
   if (!token) return;
 
@@ -54,7 +53,7 @@ export const deleteCard = (
 
 export const updateCard = (
   { ws, token, setCards }: CardActionsProps,
-  id: number,
+  id: string,
   updatedCard: Partial<CardType>
 ): void => {
   if (!token) return;
