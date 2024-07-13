@@ -1,8 +1,7 @@
-import { ChangeEvent, FC, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { CardType, GroupType } from './types';
 import './App.css';
-import { AuthContext } from './contexts/AuthContext';
 import { notification } from 'antd';
 import { AdminPage } from './components/AdminPage';
 import { GroupList } from './components/GroupList';
@@ -10,6 +9,7 @@ import { GroupModal } from './components/GroupModal';
 import { Header } from './components/Header';
 import { addGroup, deleteGroup, updateGroup } from './actions/groupActions';
 import { addCard, deleteCard, updateCard } from './actions/cardActions';
+import { useAuth } from './hooks/useAuth.ts';
 
 const initialCards: CardType[] = [];
 const initialGroups: GroupType[] = [];
@@ -23,7 +23,7 @@ export const App: FC = () => {
   const [newGroupName, setNewGroupName] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<GroupType | null>(null);
   const [editedGroupName, setEditedGroupName] = useState('');
-  const authContext = useContext(AuthContext);
+  const  authContext = useAuth();
 
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:8080');
@@ -47,8 +47,30 @@ export const App: FC = () => {
         case 'getCards':
           setCards(message.payload);
           break;
+        case 'createCard':
+          setCards((prevCards) => [...prevCards, message.payload]);
+          break;
+        case 'updateCard':
+          setCards((prevCards) =>
+            prevCards.map((card) => (card._id === message.payload._id ? message.payload : card))
+          );
+          break;
+        case 'deleteCard':
+          setCards((prevCards) => prevCards.filter((card) => card._id !== message.payload));
+          break;
         case 'getGroups':
           setGroups(message.payload);
+          break;
+        case 'createGroup':
+          setGroups((prevGroups) => [...prevGroups, message.payload]);
+          break;
+        case 'updateGroup':
+          setGroups((prevGroups) =>
+            prevGroups.map((group) => (group._id === message.payload._id ? message.payload : group))
+          );
+          break;
+        case 'deleteGroup':
+          setGroups((prevGroups) => prevGroups.filter((group) => group._id !== message.payload));
           break;
         default:
           break;
@@ -56,7 +78,7 @@ export const App: FC = () => {
     };
 
     socket.onclose = () => {
-      console.log('Отключение от WebSocket server');
+      console.log('Вы отключены от WebSocket сервера');
     };
 
     socket.onerror = (error) => {
@@ -89,7 +111,7 @@ export const App: FC = () => {
 
   const handleEditModalOk = () => {
     if (selectedGroup) {
-      updateGroup({ ws, token: authContext?.token, setGroups }, selectedGroup._id, { groupName: editedGroupName });
+      updateGroup({ ws, token: authContext?.token }, selectedGroup._id, { groupName: editedGroupName });
     }
     setIsEditModalVisible(false);
   };
@@ -101,7 +123,7 @@ export const App: FC = () => {
 
   const handleModalOk = () => {
     setIsModalVisible(false);
-    addGroup({ ws, token: authContext?.token, setGroups }, newGroupName);
+    addGroup({ ws, token: authContext?.token }, newGroupName);
   };
 
   const handleModalCancel = () => {
@@ -137,15 +159,15 @@ export const App: FC = () => {
                 updateCard={(id: string, updatedCard: Partial<CardType>) =>
                   updateCard({ ws, token: authContext?.token, setCards }, id, updatedCard)
                 }
-                addCard={(_id) =>
+                addCard={(groupName) =>
                   addCard({ ws, token: authContext?.token, setCards }, {
                     title: 'New Card',
                     status: 'green',
                     text: '',
-                    group: _id
+                    group: groupName
                   })
                 }
-                deleteGroup={(id: string) => deleteGroup({ ws, token: authContext?.token, setGroups }, id)}
+                deleteGroup={(id: string) => deleteGroup({ ws, token: authContext?.token }, id)}
                 handleEditGroup={handleEditGroup}
                 handleGroupSelect={handleGroupSelect}
                 isAuthenticated={!!authContext?.token}

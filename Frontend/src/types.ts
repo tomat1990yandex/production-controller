@@ -10,5 +10,5 @@ export interface CardType {
   title: string;
   status: CardStatus;
   text: string;
-  group: string | GroupType;
+  group: string;
 }

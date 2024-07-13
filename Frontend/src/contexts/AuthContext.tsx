@@ -1,6 +1,6 @@
 import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 
-interface AuthContextType {
+export interface AuthContextType {
   token: string | null;
   login: (token: string) => void;
   logout: () => void;

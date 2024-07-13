@@ -1,5 +1,4 @@
 import { CardType } from '../types';
-import { notification } from 'antd';
 import { Dispatch, SetStateAction } from 'react';
 
 interface CardActionsProps {
@@ -8,47 +7,22 @@ interface CardActionsProps {
   setCards: Dispatch<SetStateAction<CardType[]>>;
 }
 
-const showErrorNotification = (title: string, message: string) => {
-  notification.error({
-    message: title,
-    description: message
-  });
-};
-
 export const addCard = (
-  { ws, token, setCards }: CardActionsProps,
+  { ws, token }: CardActionsProps,
   newCard: CardType
 ): void => {
   if (!token) return;
 
   ws?.send(JSON.stringify({ action: 'createCard', payload: newCard, token }));
-
-  ws?.addEventListener('message', (event) => {
-    const message = JSON.parse(event.data);
-    if (message.action === 'createCard') {
-      setCards((prevCards) => [...prevCards, message.payload]);
-    } else if (message.action === 'error') {
-      showErrorNotification(message.payload, message.message);
-    }
-  });
 };
 
 export const deleteCard = (
-  { ws, token, setCards }: CardActionsProps,
+  { ws, token }: CardActionsProps,
   id: string
 ): void => {
   if (!token) return;
 
   ws?.send(JSON.stringify({ action: 'deleteCard', payload: { _id: id }, token }));
-
-  ws?.addEventListener('message', (event) => {
-    const message = JSON.parse(event.data);
-    if (message.action === 'deleteCard') {
-      setCards((prevCards) => prevCards.filter((card) => card._id !== id));
-    } else if (message.action === 'error') {
-      showErrorNotification(message.payload, message.message);
-    }
-  });
 };
 
 export const updateCard = (
@@ -65,16 +39,5 @@ export const updateCard = (
       ws?.send(JSON.stringify({ action: 'updateCard', payload: cardToUpdate, token }));
     }
     return [...prevCards];
-  });
-
-  ws?.addEventListener('message', (event) => {
-    const message = JSON.parse(event.data);
-    if (message.action === 'updateCard') {
-      setCards((prevCards) =>
-        prevCards.map((card) => (card._id === id ? message.payload : card))
-      );
-    } else if (message.action === 'error') {
-      showErrorNotification(message.payload, message.message);
-    }
   });
 };

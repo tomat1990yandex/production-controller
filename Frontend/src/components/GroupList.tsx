@@ -34,7 +34,7 @@ export const GroupList: FC<GroupListProps> = ({
           <h2 className="group-title">{group.groupName}</h2>
           <div className="group" onClick={() => handleGroupSelect(group)}>
             <div className="cards-container">
-              {(cards.filter(card => (card.group === group._id) || (card.group._id === group._id))).map(card =>
+              {cards.filter(card => card.group === group.groupName).map(card =>
                 <CardItem
                   key={card._id}
                   card={card}
@@ -47,7 +47,7 @@ export const GroupList: FC<GroupListProps> = ({
           </div>
           {isAuthenticated && (
             <div className="group-actions">
-              <Button onClick={() => addCard(group._id)}>Добавить карточку</Button>
+              <Button onClick={() => addCard(group.groupName)}>Добавить карточку</Button>
               <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
               <Popconfirm
                 title="Удалить группу?"

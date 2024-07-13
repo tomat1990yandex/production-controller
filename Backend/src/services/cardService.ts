@@ -1,7 +1,7 @@
 import { Card, ICard } from '../models/cardModel';
 
 export const findAllCards = async (): Promise<ICard[]> => {
-    return Card.find().populate('group');
+    return Card.find();
 };
 
 export const createCard = async (card: Partial<ICard>): Promise<ICard> => {
