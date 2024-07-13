@@ -8,6 +8,8 @@ import { AdminPage } from './components/AdminPage';
 import { GroupList } from './components/GroupList';
 import { GroupModal } from './components/GroupModal';
 import { Header } from './components/Header';
+import { addGroup, deleteGroup, updateGroup } from './actions/groupActions';
+import { addCard, deleteCard, updateCard } from './actions/cardActions';
 
 const initialCards: CardType[] = [];
 const initialGroups: GroupType[] = [];
@@ -43,32 +45,10 @@ export const App: FC = () => {
 
       switch (message.action) {
         case 'getCards':
-          setCards(message.payload || []);
-          break;
-        case 'createCard':
-          setCards((prevCards) => [...prevCards, message.payload]);
-          break;
-        case 'updateCard':
-          setCards((prevCards) =>
-            prevCards.map((card) => (card._id === message.payload._id ? message.payload : card))
-          );
-          break;
-        case 'deleteCard':
-          setCards((prevCards) => prevCards.filter((card) => card._id !== message.payload));
+          setCards(message.payload);
           break;
         case 'getGroups':
-          setGroups(message.payload || []);
-          break;
-        case 'createGroup':
-          setGroups((prevGroups) => [...prevGroups, message.payload]);
-          break;
-        case 'updateGroup':
-          setGroups((prevGroups) =>
-            prevGroups.map((group) => (group._id === message.payload._id ? message.payload : group))
-          );
-          break;
-        case 'deleteGroup':
-          setGroups((prevGroups) => prevGroups.filter((group) => group._id !== message.payload));
+          setGroups(message.payload);
           break;
         default:
           break;
@@ -97,66 +77,6 @@ export const App: FC = () => {
     });
   };
 
-  const addCard = (): void => {
-    if (!authContext?.token || !selectedGroup) return;
-
-    const newCard: CardType = {
-      title: 'New Card',
-      status: 'green',
-      text: '',
-      group: selectedGroup
-    };
-
-    ws?.send(JSON.stringify({ action: 'createCard', payload: newCard, token: authContext.token }));
-  };
-
-  const deleteCard = (id: number): void => {
-    if (!authContext?.token) return;
-
-    ws?.send(JSON.stringify({ action: 'deleteCard', payload: { _id: id }, token: authContext.token }));
-  };
-
-  const updateCard = (id: number, updatedCard: Partial<CardType>): void => {
-    if (!authContext?.token) return;
-
-    const updatedCards = cards.map((card) => (card._id === id ? { ...card, ...updatedCard } : card));
-    setCards(updatedCards);
-
-    const cardToUpdate = updatedCards.find((card) => card._id === id);
-    if (cardToUpdate) {
-      ws?.send(JSON.stringify({ action: 'updateCard', payload: cardToUpdate, token: authContext.token }));
-    }
-  };
-
-  const addGroup = (): void => {
-    if (!authContext?.token || !newGroupName.trim()) return;
-
-    const newGroup: Partial<GroupType> = {
-      groupName: newGroupName.trim()
-    };
-
-    ws?.send(JSON.stringify({ action: 'createGroup', payload: newGroup, token: authContext.token }));
-    setNewGroupName('');
-  };
-
-  const deleteGroup = (id: number): void => {
-    if (!authContext?.token) return;
-
-    ws?.send(JSON.stringify({ action: 'deleteGroup', payload: { _id: id }, token: authContext.token }));
-  };
-
-  const updateGroup = (id: number, updatedGroup: Partial<GroupType>): void => {
-    if (!authContext?.token) return;
-
-    const updatedGroups = groups.map((group) => (group._id === id ? { ...group, ...updatedGroup } : group));
-    setGroups(updatedGroups);
-
-    const groupToUpdate = updatedGroups.find((group) => group._id === id);
-    if (groupToUpdate) {
-      ws?.send(JSON.stringify({ action: 'updateGroup', payload: groupToUpdate, token: authContext.token }));
-    }
-  };
-
   const handleAddGroup = () => {
     setIsModalVisible(true);
   };
@@ -169,7 +89,7 @@ export const App: FC = () => {
 
   const handleEditModalOk = () => {
     if (selectedGroup) {
-      updateGroup(selectedGroup._id, { groupName: editedGroupName });
+      updateGroup({ ws, token: authContext?.token, setGroups }, selectedGroup._id, { groupName: editedGroupName });
     }
     setIsEditModalVisible(false);
   };
@@ -181,7 +101,7 @@ export const App: FC = () => {
 
   const handleModalOk = () => {
     setIsModalVisible(false);
-    addGroup();
+    addGroup({ ws, token: authContext?.token, setGroups }, newGroupName);
   };
 
   const handleModalCancel = () => {
@@ -207,19 +127,25 @@ export const App: FC = () => {
         path="/"
         element={
           <div className="app-container">
-            <Header
-              handleAddGroup={handleAddGroup}
-              isAuthenticated={!!authContext?.token}
-              logout={authContext?.logout}
-            />
+            <Header handleAddGroup={handleAddGroup} isAuthenticated={!!authContext?.token}
+                    logout={authContext?.logout} />
             <main>
               <GroupList
                 groups={groups}
                 cards={cards}
-                deleteCard={deleteCard}
-                updateCard={updateCard}
-                addCard={addCard}
-                deleteGroup={deleteGroup}
+                deleteCard={(id: number) => deleteCard({ ws, token: authContext?.token, setCards }, id)}
+                updateCard={(id: number, updatedCard: Partial<CardType>) =>
+                  updateCard({ ws, token: authContext?.token, setCards }, id, updatedCard)
+                }
+                addCard={(group: GroupType) =>
+                  addCard({ ws, token: authContext?.token, setCards }, {
+                    title: 'New Card',
+                    status: 'green',
+                    text: '',
+                    group
+                  })
+                }
+                deleteGroup={(id: number) => deleteGroup({ ws, token: authContext?.token, setGroups }, id)}
                 handleEditGroup={handleEditGroup}
                 handleGroupSelect={handleGroupSelect}
                 isAuthenticated={!!authContext?.token}

@@ -9,7 +9,7 @@ interface GroupListProps {
   cards: CardType[];
   deleteCard: (id: number) => void;
   updateCard: (id: number, updatedCard: Partial<CardType>) => void;
-  addCard: () => void;
+  addCard: (group: GroupType) => void;
   deleteGroup: (id: number) => void;
   handleEditGroup: (group: GroupType) => void;
   handleGroupSelect: (group: GroupType) => void;
@@ -34,16 +34,15 @@ export const GroupList: FC<GroupListProps> = ({
           <h2 className="group-title">{group.groupName}</h2>
           <div className="group" onClick={() => handleGroupSelect(group)}>
             <CardList
-              cards={cards}
-              groupId={group._id}
+              cards={cards.filter(card => card.group._id === group._id)}
               onDelete={deleteCard}
               onUpdate={updateCard}
-              onAddCard={addCard}
               isAuthenticated={isAuthenticated}
             />
           </div>
           {isAuthenticated && (
             <div className="group-actions">
+              <Button onClick={() => addCard(group)}>Добавить карточку</Button>
               <Button onClick={() => handleEditGroup(group)}>Редактировать группу</Button>
               <Popconfirm
                 title="Удалить группу?"
