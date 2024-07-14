@@ -50,23 +50,13 @@
     gap: 10px;
 }
 
-
-.add-card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: 2px dashed #d9d9d9;
-}
-
 .auth-form {
     display: flex;
     align-items: center;
-    gap: 5px;
 }
 
 .auth-title {
-    margin: 0;
+    margin: 0 16px 0 0;
     color: #d9d9d9;
 }
 
@@ -77,4 +67,22 @@
 .auth-wrapper {
     display: flex;
     gap: 10px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.group-background-green {
+    background-image: linear-gradient(to right top, rgba(12, 55, 5, 0.5), rgba(39, 83, 18, 0.5), rgba(68, 113, 29, 0.5), rgba(101, 144, 40, 0.5), rgba(137, 175, 50, 0.5));
+}
+
+.group-background-yellow {
+    background-image: linear-gradient(to right top, rgba(229, 229, 86, 0.5), rgba(226, 212, 75, 0.5), rgba(222, 195, 65, 0.5), rgba(217, 178, 57, 0.5), rgba(211, 162, 50, 0.5));
+}
+
+.group-background-red {
+    background-image: linear-gradient(to right top, rgba(111, 35, 27, 0.5), rgba(135, 40, 39, 0.5), rgba(160, 44, 52, 0.5), rgba(185, 47, 68, 0.5), rgba(211, 50, 86, 0.5));
 }

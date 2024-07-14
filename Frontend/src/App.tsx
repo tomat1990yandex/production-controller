@@ -10,6 +10,7 @@ import { Header } from './components/Header';
 import { addGroup, deleteGroup, updateGroup } from './actions/groupActions';
 import { addCard, deleteCard, updateCard } from './actions/cardActions';
 import { useAuth } from './hooks/useAuth.ts';
+import { WS_URL } from './constants/constants.ts';
 
 const initialCards: CardType[] = [];
 const initialGroups: GroupType[] = [];
@@ -26,7 +27,7 @@ export const App: FC = () => {
   const  authContext = useAuth();
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket(WS_URL);
 
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
@@ -155,7 +156,7 @@ export const App: FC = () => {
               <GroupList
                 groups={groups}
                 cards={cards}
-                deleteCard={(id: string) => deleteCard({ ws, token: authContext?.token, logout: authContext?.logout }, id)}
+                deleteCard={(id: string) => deleteCard({ ws, token: authContext?.token, logout: authContext?.logout, setCards}, id)}
                 updateCard={(id: string, updatedCard: Partial<CardType>) =>
                   updateCard({ ws, token: authContext?.token, setCards }, id, updatedCard)
                 }

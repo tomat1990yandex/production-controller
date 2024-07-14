@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { Button, Card, Input, Select } from 'antd';
+import { Button, Card, ConfigProvider, Input, Popconfirm, Select } from 'antd';
 import { CardStatus, CardType } from '../types';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -53,49 +54,78 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
   };
 
   return (
-    <Card
-      key={card._id}
-      title={
-        <Input
-          value={localCard.title}
-          onChange={handleTitleChange}
-          disabled={!localCard.isEditing}
-        />
-      }
-      extra={
-        isAuthenticated && (
-          <Button type="link" disabled={!localCard.isEditing} onClick={handleDelete}>
-            Удалить
-          </Button>
-        )
-      }
-      style={{
-        borderLeft: `5px solid ${card.status}`,
-        width: 300
+    <ConfigProvider
+      theme={{
+        components: {
+          Card: {
+            padding: 12,
+            paddingLG: 12,
+          },
+          Input: {
+            colorTextDisabled: '#000000e0'
+          },
+          Select: {
+            colorTextDisabled: '#000000e0'
+          }
+        }
       }}
     >
-      <Select
-        value={localCard.status}
-        onChange={handleStatusChange}
-        disabled={!localCard.isEditing}
+      {
+
+      }
+      <Card
+        key={card._id}
+        title={
+          <Input
+            value={localCard.title}
+            onChange={handleTitleChange}
+            disabled={!localCard.isEditing}
+          />
+        }
+        extra={
+          isAuthenticated && (
+            <Popconfirm
+              title="Удалить карточку?"
+              description="Вы уверены что хотите удалить карточку?"
+              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+              onConfirm={handleDelete}
+            >
+              <Button style={{marginLeft: 10}} danger disabled={!localCard.isEditing}>
+                Удалить
+              </Button>
+            </Popconfirm>
+          )
+        }
+        style={{
+          borderLeft: `6px solid ${card.status}`,
+          width: 300
+        }}
       >
-        <Option value="green">Green</Option>
-        <Option value="yellow">Yellow</Option>
-        <Option value="red">Red</Option>
-      </Select>
-      <TextArea
-        value={localCard.text}
-        onChange={handleTextChange}
-        rows={4}
-        disabled={!localCard.isEditing}
-      />
-      <div>
-        {localCard.isEditing ? (
-          <Button type="primary" onClick={handleSave}>Сохранить</Button>
-        ) : (
-          isAuthenticated && <Button type="default" onClick={handleEdit}>Редактировать</Button>
-        )}
-      </div>
-    </Card>
+        <div className="card-body">
+          <Select
+            value={localCard.status}
+            onChange={handleStatusChange}
+            disabled={!localCard.isEditing}
+          >
+            <Option value="green">Работает</Option>
+            <Option value="yellow">Простаивает</Option>
+            <Option value="red">Сломано</Option>
+          </Select>
+          <TextArea
+            value={localCard.text}
+            onChange={handleTextChange}
+            rows={4}
+            disabled={!localCard.isEditing}
+          />
+          <div>
+            {localCard.isEditing ? (
+              <Button type="primary" onClick={handleSave}>Сохранить</Button>
+            ) : (
+              isAuthenticated && <Button type="default" onClick={handleEdit}>Редактировать</Button>
+            )}
+          </div>
+        </div>
+      </Card>
+    </ConfigProvider>
   );
 };

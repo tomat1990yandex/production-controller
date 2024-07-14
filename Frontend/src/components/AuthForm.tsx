@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Button, Form, Input, Modal } from 'antd';
 import { AuthContext } from '../contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
-
-const baseUrl = 'http://localhost:5000';
+import { BASE_URL } from '../constants/constants';
 
 type FieldType = {
   username?: string;
@@ -21,7 +20,7 @@ export const AuthForm: FC = () => {
   const location = useLocation();
 
   const textSuccess = {
-    title: 'Register success!',
+    title: 'Успешная регистрация!',
     content: (
       <>
         <span>{`Username: ${username}`}</span>
@@ -32,7 +31,7 @@ export const AuthForm: FC = () => {
   };
 
   const textError = {
-    title: isLogin ? 'Login error!' : 'Register error!'
+    title: isLogin ? 'Ошибка входа!' : 'Ошибка регистрации!'
   };
 
   useEffect(() => {
@@ -46,14 +45,14 @@ export const AuthForm: FC = () => {
   const handleAuth = async () => {
     try {
       setLoadings(true);
-      const response = await axios.post(`${baseUrl}/api/auth/${isLogin ? 'login' : 'register'}`, {
+      const response = await axios.post(`${BASE_URL}/api/auth/${isLogin ? 'login' : 'register'}`, {
         username,
         password
       });
       if (isLogin) {
         authContext?.login(response.data.token);
       } else {
-        const response = await axios.post(`${baseUrl}/api/auth/login`, {
+        const response = await axios.post(`${BASE_URL}/api/auth/login`, {
           username,
           password
         });
@@ -70,18 +69,22 @@ export const AuthForm: FC = () => {
 
   return (
     <Form className="auth-form" layout={'inline'} onFinish={handleAuth}>
-      <h2 className="auth-title">{isLogin ? 'Login' : 'Register'}</h2>
+      <h2 className="auth-title">{isLogin ? 'Вход' : 'Регистрация'}</h2>
       <Form.Item<FieldType>
         name="username"
       >
-        <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <Input
+          placeholder="Логин"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </Form.Item>
       <Form.Item<FieldType>
         name="password"
       >
         <Input.Password
           type="password"
-          placeholder="Password"
+          placeholder="Пароль"
           value={password}
           onChange={(e) => setPassword(e.target.value)} />
       </Form.Item>
@@ -90,7 +93,7 @@ export const AuthForm: FC = () => {
           <Button
             htmlType={'submit'}
             type={'primary'}
-            loading={loadings}>{isLogin ? 'Login' : 'Register'}</Button>
+            loading={loadings}>{isLogin ? 'Вход' : 'Регистрация'}</Button>
         )}
       </Form.Item>
       {contextHolder}

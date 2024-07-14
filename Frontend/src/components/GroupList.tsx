@@ -27,12 +27,26 @@ export const GroupList: FC<GroupListProps> = ({
                                                 handleGroupSelect,
                                                 isAuthenticated
                                               }) => {
+  const getGroupBackgroundClass = (group: GroupType): string => {
+    const groupCards = cards.filter(card => card.group === group.groupName);
+    if (groupCards.some(card => card.status === 'red')) {
+      return 'group-background-red';
+    }
+    if (groupCards.some(card => card.status === 'yellow')) {
+      return 'group-background-yellow';
+    }
+    if (groupCards.some(card => card.status === 'green')) {
+      return 'group-background-green';
+    }
+    return '';
+  };
+
   return (
     <div className="groups-container">
       {groups.map(group => (
-        <div key={group._id} className="group-wrapper">
+        <div key={group._id} >
           <h2 className="group-title">{group.groupName}</h2>
-          <div className="group" onClick={() => handleGroupSelect(group)}>
+          <div className={`group group-wrapper ${getGroupBackgroundClass(group)}`} onClick={() => handleGroupSelect(group)}>
             <div className="cards-container">
               {cards.filter(card => card.group === group.groupName).map(card =>
                 <CardItem
