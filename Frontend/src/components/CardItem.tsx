@@ -60,7 +60,6 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
           value={localCard.title}
           onChange={handleTitleChange}
           disabled={!localCard.isEditing}
-          style={{ width: '100%' }}
         />
       }
       extra={
@@ -79,7 +78,6 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
         value={localCard.status}
         onChange={handleStatusChange}
         disabled={!localCard.isEditing}
-        style={{ marginBottom: '10px' }}
       >
         <Option value="green">Green</Option>
         <Option value="yellow">Yellow</Option>
@@ -91,7 +89,7 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
         rows={4}
         disabled={!localCard.isEditing}
       />
-      <div style={{ marginTop: '10px' }}>
+      <div>
         {localCard.isEditing ? (
           <Button type="primary" onClick={handleSave}>Сохранить</Button>
         ) : (

@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from 'react';
 interface CardActionsProps {
   ws: WebSocket | null;
   token: string | null | undefined;
+  logout?: () => void;
   setCards: Dispatch<SetStateAction<CardType[]>>;
 }
 
@@ -17,12 +18,21 @@ export const addCard = (
 };
 
 export const deleteCard = (
-  { ws, token }: CardActionsProps,
+  { ws, token, logout }: CardActionsProps,
   id: string
 ): void => {
   if (!token) return;
 
   ws?.send(JSON.stringify({ action: 'deleteCard', payload: { _id: id }, token }));
+
+  ws?.addEventListener('message', (event) => {
+    const message = JSON.parse(event.data);
+    if (message.action === 'error') {
+      if (message.payload === "Неавторизованный запрос") if (logout) {
+        logout();
+      }
+    }
+  });
 };
 
 export const updateCard = (

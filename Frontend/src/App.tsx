@@ -155,13 +155,13 @@ export const App: FC = () => {
               <GroupList
                 groups={groups}
                 cards={cards}
-                deleteCard={(id: string) => deleteCard({ ws, token: authContext?.token, setCards }, id)}
+                deleteCard={(id: string) => deleteCard({ ws, token: authContext?.token, logout: authContext?.logout }, id)}
                 updateCard={(id: string, updatedCard: Partial<CardType>) =>
                   updateCard({ ws, token: authContext?.token, setCards }, id, updatedCard)
                 }
                 addCard={(groupName) =>
                   addCard({ ws, token: authContext?.token, setCards }, {
-                    title: 'New Card',
+                    title: 'Новая карточка',
                     status: 'green',
                     text: '',
                     group: groupName
