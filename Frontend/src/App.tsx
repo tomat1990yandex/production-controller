@@ -10,10 +10,12 @@ import { Header } from './components/Header';
 import { addGroup, deleteGroup, updateGroup } from './actions/groupActions';
 import { addCard, deleteCard, updateCard } from './actions/cardActions';
 import { useAuth } from './hooks/useAuth.ts';
-import { WS_URL } from './constants/constants.ts';
 
 const initialCards: CardType[] = [];
 const initialGroups: GroupType[] = [];
+
+const DOMAIN = import.meta.env.VITE_DOMAIN
+const WS_PORT = import.meta.env.VITE_WS_PORT
 
 export const App: FC = () => {
   const [cards, setCards] = useState<CardType[]>(initialCards);
@@ -27,7 +29,7 @@ export const App: FC = () => {
   const  authContext = useAuth();
 
   useEffect(() => {
-    const socket = new WebSocket(WS_URL);
+    const socket = new WebSocket(`ws://${DOMAIN}:${WS_PORT}`);
 
     socket.onopen = () => {
       console.log('Connected to WebSocket server');

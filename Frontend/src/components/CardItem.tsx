@@ -97,7 +97,7 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
           )
         }
         style={{
-          borderLeft: `6px solid ${card.status}`,
+          border: `6px solid ${card.status}`,
           width: 300
         }}
       >
@@ -107,9 +107,9 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
             onChange={handleStatusChange}
             disabled={!localCard.isEditing}
           >
-            <Option value="green">Работает</Option>
-            <Option value="yellow">Простаивает</Option>
-            <Option value="red">Сломано</Option>
+            <Option value="green">Замечаний нет</Option>
+            <Option value="yellow">Необходима диагностика</Option>
+            <Option value="red">Требуется ремонт</Option>
           </Select>
           <TextArea
             value={localCard.text}

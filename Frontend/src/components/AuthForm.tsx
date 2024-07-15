@@ -3,7 +3,9 @@ import axios from 'axios';
 import { Button, Form, Input, Modal } from 'antd';
 import { AuthContext } from '../contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
-import { BASE_URL } from '../constants/constants';
+
+const DOMAIN = import.meta.env.VITE_DOMAIN
+const API_PORT = import.meta.env.VITE_API_PORT
 
 type FieldType = {
   username?: string;
@@ -45,14 +47,14 @@ export const AuthForm: FC = () => {
   const handleAuth = async () => {
     try {
       setLoadings(true);
-      const response = await axios.post(`${BASE_URL}/api/auth/${isLogin ? 'login' : 'register'}`, {
+      const response = await axios.post(`http://${DOMAIN}:${API_PORT}/api/auth/${isLogin ? 'login' : 'register'}`, {
         username,
         password
       });
       if (isLogin) {
         authContext?.login(response.data.token);
       } else {
-        const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+        const response = await axios.post(`http://${DOMAIN}:${API_PORT}/api/auth/login`, {
           username,
           password
         });
