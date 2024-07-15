@@ -14,7 +14,7 @@ import { useAuth } from './hooks/useAuth.ts';
 const initialCards: CardType[] = [];
 const initialGroups: GroupType[] = [];
 
-const DOMAIN = import.meta.env.VITE_DOMAIN
+const DOMAIN = import.meta.env.VITE_DOMAIN || '127.0.0.1';
 const WS_PORT = import.meta.env.VITE_WS_PORT
 
 export const App: FC = () => {

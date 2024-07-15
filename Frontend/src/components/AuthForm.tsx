@@ -4,7 +4,7 @@ import { Button, Form, Input, Modal } from 'antd';
 import { AuthContext } from '../contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
 
-const DOMAIN = import.meta.env.VITE_DOMAIN
+const DOMAIN = import.meta.env.VITE_DOMAIN || '127.0.0.1';
 const API_PORT = import.meta.env.VITE_API_PORT
 
 type FieldType = {
@@ -74,6 +74,7 @@ export const AuthForm: FC = () => {
       <h2 className="auth-title">{isLogin ? 'Вход' : 'Регистрация'}</h2>
       <Form.Item<FieldType>
         name="username"
+        style={{marginInlineEnd: 0}}
       >
         <Input
           placeholder="Логин"
@@ -83,6 +84,7 @@ export const AuthForm: FC = () => {
       </Form.Item>
       <Form.Item<FieldType>
         name="password"
+        style={{marginInlineEnd: 0}}
       >
         <Input.Password
           type="password"
@@ -90,7 +92,9 @@ export const AuthForm: FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)} />
       </Form.Item>
-      <Form.Item shouldUpdate>
+      <Form.Item
+        style={{marginInlineEnd: 0}}
+        shouldUpdate>
         {() => (
           <Button
             htmlType={'submit'}

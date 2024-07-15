@@ -24,7 +24,7 @@
 
 .group {
     display: flex;
-    border: 2px solid #ccc;
+    border: 2px solid rgb(204, 204, 204);
     border-radius: 10px;
     padding: 20px;
 }
@@ -53,11 +53,16 @@
 .auth-form {
     display: flex;
     align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 .auth-title {
-    margin: 0 16px 0 0;
-    color: #d9d9d9;
+    margin: 0;
+    color: rgb(217, 217, 217);
+}
+.auth-form-component {
+    margin-inline-end: 0;
 }
 
 .admin-page {
@@ -73,16 +78,4 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-}
-
-.group-background-green {
-    background-image: linear-gradient(to right top, rgba(12, 55, 5, 0.5), rgba(39, 83, 18, 0.5), rgba(68, 113, 29, 0.5), rgba(101, 144, 40, 0.5), rgba(137, 175, 50, 0.5));
-}
-
-.group-background-yellow {
-    background-image: linear-gradient(to right top, rgba(229, 229, 86, 0.5), rgba(226, 212, 75, 0.5), rgba(222, 195, 65, 0.5), rgba(217, 178, 57, 0.5), rgba(211, 162, 50, 0.5));
-}
-
-.group-background-red {
-    background-image: linear-gradient(to right top, rgba(111, 35, 27, 0.5), rgba(135, 40, 39, 0.5), rgba(160, 44, 52, 0.5), rgba(185, 47, 68, 0.5), rgba(211, 50, 86, 0.5));
 }
