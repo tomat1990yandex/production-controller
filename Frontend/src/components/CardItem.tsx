@@ -53,6 +53,19 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
     }
   };
 
+  const getCardBackgroundColor = (status: CardStatus): string => {
+    switch (status) {
+      case 'green':
+        return 'linear-gradient(to top, #1d711d, #2b8523, #3a9929, #49ad2e, #59c233)';
+      case 'yellow':
+        return 'linear-gradient(to top, #71711d, #848322, #989528, #ada82d, #c2bb33)';
+      case 'red':
+        return 'linear-gradient(to top, #71201d, #852923, #993228, #ad3b2e, #c24533)';
+      default:
+        return 'white';
+    }
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -60,19 +73,21 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
           Card: {
             padding: 12,
             paddingLG: 12,
+            colorBgContainer: getCardBackgroundColor(localCard.status),
+            colorBorderSecondary: 'none'
           },
           Input: {
-            colorTextDisabled: '#000000e0'
+            colorTextDisabled: '#000000e0',
+            colorBgContainerDisabled: '#ffffffde'
           },
           Select: {
-            colorTextDisabled: '#000000e0'
-          }
+            colorTextDisabled: '#000000e0',
+            colorBgContainerDisabled: '#ffffffde'
+          },
+          Button: {}
         }
       }}
     >
-      {
-
-      }
       <Card
         key={card._id}
         title={
@@ -86,18 +101,17 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
           isAuthenticated && (
             <Popconfirm
               title="Удалить карточку?"
-              description="Вы уверены что хотите удалить карточку?"
+              description="Вы уверены, что хотите удалить карточку?"
               icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
               onConfirm={handleDelete}
             >
-              <Button style={{marginLeft: 10}} danger disabled={!localCard.isEditing}>
+              <Button style={{ marginLeft: 10 }} danger disabled={!localCard.isEditing}>
                 Удалить
               </Button>
             </Popconfirm>
           )
         }
         style={{
-          border: `6px solid ${card.status}`,
           width: 300
         }}
       >
@@ -119,9 +133,10 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
           />
           <div>
             {localCard.isEditing ? (
-              <Button type="primary" onClick={handleSave}>Сохранить</Button>
+              <Button type="primary" className="cards-button" onClick={handleSave}>Сохранить</Button>
             ) : (
-              isAuthenticated && <Button type="default" onClick={handleEdit}>Редактировать</Button>
+              isAuthenticated &&
+              <Button type="default" className="cards-button" onClick={handleEdit}>Редактировать</Button>
             )}
           </div>
         </div>

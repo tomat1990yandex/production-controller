@@ -39,6 +39,10 @@
     gap: 10px;
 }
 
+.cards-button {
+    width: 100%;
+}
+
 .group-wrapper {
     gap: 10px;
 }
@@ -61,6 +65,7 @@
     margin: 0;
     color: rgb(217, 217, 217);
 }
+
 .auth-form-component {
     margin-inline-end: 0;
 }

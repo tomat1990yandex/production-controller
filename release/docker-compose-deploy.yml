@@ -2,36 +2,29 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: pc-frontend:latest  # Используем импортированный образ
     ports:
       - "3000:80"  # Порт для доступа к фронтенду
     container_name: pc-gui
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: pc-backend:latest  # Используем импортированный образ
     ports:
       - "5500:5000"
       - "8080:8080"
-      # Порт для доступа к бэкенду
     environment:
       - NODE_ENV=production
     depends_on:
       - mongodb  # Указываем зависимость от сервиса mongodb
     container_name: pc-api
 
-
   mongodb:
-    image: mongo
+    image: mongo:latest  # Используем официальный образ MongoDB
     ports:
       - "27017:27017"  # Порт MongoDB
     container_name: pc-db
-    # Определяем volume для хранения данных MongoDB
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_data:/data/db  # Определяем volume для хранения данных MongoDB
 
 volumes:
   mongodb_data:
