@@ -30,21 +30,7 @@ export const GroupList: FC<GroupListProps> = ({
   return (
     <div className="groups-container">
       {groups.map(group => (
-        <div key={group._id} >
-          <h2 className="group-title">{group.groupName}</h2>
-          <div className={"group group-wrapper"} onClick={() => handleGroupSelect(group)}>
-            <div className="cards-container">
-              {cards.filter(card => card.group === group.groupName).map(card =>
-                <CardItem
-                  key={card._id}
-                  card={card}
-                  onDelete={deleteCard}
-                  onUpdate={updateCard}
-                  isAuthenticated={isAuthenticated}
-                />
-              )}
-            </div>
-          </div>
+        <div key={group._id} className="group-wrapper">
           {isAuthenticated && (
             <div className="group-actions">
               <Button onClick={() => addCard(group.groupName)}>Добавить карточку</Button>
@@ -59,6 +45,20 @@ export const GroupList: FC<GroupListProps> = ({
               </Popconfirm>
             </div>
           )}
+          <h2 className="group-title">{group.groupName}</h2>
+          <div className="group" onClick={() => handleGroupSelect(group)}>
+            <div className="cards-container">
+              {cards.filter(card => card.group === group.groupName).map(card =>
+                <CardItem
+                  key={card._id}
+                  card={card}
+                  onDelete={deleteCard}
+                  onUpdate={updateCard}
+                  isAuthenticated={isAuthenticated}
+                />
+              )}
+            </div>
+          </div>
         </div>
       ))}
     </div>

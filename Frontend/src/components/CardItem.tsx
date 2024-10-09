@@ -111,9 +111,6 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
             </Popconfirm>
           )
         }
-        style={{
-          width: 300
-        }}
       >
         <div className="card-body">
           <Select
@@ -128,7 +125,7 @@ export const CardItem: FC<CardItemProps> = ({ card, onDelete, onUpdate, isAuthen
           <TextArea
             value={localCard.text}
             onChange={handleTextChange}
-            rows={4}
+            rows={3}
             disabled={!localCard.isEditing}
           />
           <div>

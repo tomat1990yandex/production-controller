@@ -1,42 +1,46 @@
 .app-container {
     display: flex;
     flex-direction: column;
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 .header-title {
-    margin: 0 0 0 10px;
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 0 5px;
 }
 
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
     gap: 5px;
 }
 
 .groups-container {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    gap: 5px;
 }
 
 .group {
     display: flex;
+    justify-content: center;
     border: 2px solid rgb(204, 204, 204);
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
+    gap: 10px;
+    flex: 1;
 }
 
 .group-title {
-    margin: 10px;
+    margin: 5px;
 }
 
 .cards-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
+    flex: 1;
 }
 
 .cards-button {
@@ -44,11 +48,14 @@
 }
 
 .group-wrapper {
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 25%;
 }
 
 .group-actions {
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
     padding: 10px;
     gap: 10px;
